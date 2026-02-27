@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | PokéRetro</title>
+<link rel="icon" type="image/x-icon" href="./Master-Ball.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <!-- Supabase UMD (global `supabase`) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --bg-color: #0f1015;
+            --card-bg: #1c1e26;
+            --primary-red: #ff3b30;
+            --primary-yellow: #ffcc00;
+            --primary-green: #4cd964;
+            --text-main: #ffffff;
+            --text-muted: #9ba1a6;
+            --psychic-glow: #a136ff;
+            --mewtwo-card-bg: #1a0b2e;
+        }
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background-color: var(--bg-color);
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(255, 59, 48, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(255, 204, 0, 0.05), transparent 25%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            overflow-x: hidden;
+            padding: 1.5rem 0;
+        }
+
+        /* Loader ---------------------------------------------------- */
+        .loader-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 16, 21, 0.9);
+            display: none; justify-content: center; align-items: center;
+            z-index: 9999; flex-direction: column;
+        }
+        .pokeball {
+            width: 60px; height: 60px;
+            background: #fff; border: 3px solid #333;
+            border-radius: 50%; position: relative;
+            animation: spin 1s linear infinite;
+        }
+        .pokeball::before {
+            content: ""; position: absolute;
+            background: var(--primary-red); width: 100%; height: 50%;
+            border-radius: 30px 30px 0 0; border-bottom: 3px solid #333;
+        }
+        .pokeball::after {
+            content: ""; position: absolute; top: 50%; left: 50%;
+            width: 15px; height: 15px; background: #fff;
+            border: 3px solid #333; border-radius: 50%;
+            transform: translate(-50%, -50%); z-index: 10;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Layout ---------------------------------------------------- */
+       .login-wrapper {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 5rem;
+    max-width: 1400px;
+    width: 95%;
+    padding: 3rem 4rem;
+    border-radius: 28px;
+    background: radial-gradient(circle at top left, rgba(255,59,48,0.18), transparent 55%),
+                radial-gradient(circle at bottom right, rgba(161,54,255,0.15), transparent 55%),
+                rgba(9, 10, 15, 0.95);
+    box-shadow: 0 35px 80px rgba(0,0,0,0.8);
+    animation: fadeUp 0.4s ease-out;
+}
+body {
+    padding: 3rem 0;
+}
+
+        .art-side {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+       .mewtwo-card {
+    background: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 55%), var(--mewtwo-card-bg);
+    border: 2px solid rgba(161, 54, 255, 0.4);
+    border-radius: 28px;
+    padding: 45px 35px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 480px;
+    width: 100%;
+    animation: fadeUp 0.5s ease-out;
+}
+        
+      .art-side img {
+    width: 100%;
+    max-width: 420px;
+    filter: drop-shadow(0 0 25px var(--psychic-glow));
+    display: block;
+}
+.login-card {
+    flex: 1.2;
+    max-width: 700px;
+    background: radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 60%), var(--card-bg);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 3rem 3.5rem;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.75);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    animation: fadeUp 0.6s ease-out;
+}
+
+        /* Header ---------------------------------------------------- */
+        .login-header {
+            text-align: center;
+            margin-bottom: 1.4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    .login-header h1 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.6rem;
+    margin: 0;
+}
+        .login-header h1 span {
+            color: var(--primary-red);
+            margin-left: 0.35rem;
+        }
+      .login-header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+        /* Status message -------------------------------------------- */
+        .status-message {
+            margin: 0.6rem auto 1.4rem;
+            font-size: 0.6rem;
+            font-family: 'Press Start 2P', cursive;
+            text-align: center;
+            padding: 0.6rem 0.8rem;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            display: none;
+            max-width: 100%;
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .status-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .status-message.success {
+            display: block;
+            color: var(--primary-green);
+            background: rgba(76, 217, 100, 0.08);
+            border-color: rgba(76, 217, 100, 0.6);
+        }
+        .status-message.error {
+            display: block;
+            color: #ff6b6b;
+            background: rgba(255, 59, 48, 0.08);
+            border-color: rgba(255, 59, 48, 0.6);
+        }
+
+   /* Form fields ----------------------------------------------- */
+.form-group { 
+    margin-bottom: 1.4rem; 
+    width: 100%; 
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-family: 'Press Start 2P', cursive;
+    margin-bottom: 0.8rem;
+    color: var(--text-muted);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1.2rem 1.3rem;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: white;
+    outline: none;
+    font-size: 1rem;
+    transition: 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--primary-red);
+    box-shadow: 0 0 0 2px rgba(255, 59, 48, 0.4);
+}
+        /* Buttons --------------------------------------------------- */
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            margin-top: 1.9rem;
+        }
+       .btn {
+    width: 100%;
+    padding: 1.3rem 1.6rem;
+    border-radius: 60px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.25s;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    text-decoration: none;
+    letter-spacing: 0.08em;
+}
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-red), #ff6b6b);
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 36px rgba(0,0,0,0.75);
+        }
+        .submit-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .register-btn {
+            background: transparent;
+            color: var(--primary-yellow);
+            border: 1px solid rgba(255, 204, 0, 0.4);
+        }
+        .register-btn:hover {
+            border-color: var(--primary-yellow);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.6);
+            transform: translateY(-1px);
+        }
+
+        /* Animations ------------------------------------------------ */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1000px) {
+            .login-wrapper {
+                flex-direction: column;
+                gap: 2.5rem;
+                padding: 1.7rem 1.5rem;
+            }
+            .login-card {
+                max-width: 100%;
+            }
+            .art-side {
+                order: -1;
+            }
+        }
+        @media (max-width: 600px) {
+            .login-card {
+                padding: 1.7rem 1.4rem 2rem;
+            }
+            .login-header h1 { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="loader-overlay" id="loader">
+    <div class="pokeball"></div>
+    <p style="font-family: 'Press Start 2P'; font-size: 0.7rem; margin-top: 20px;">LOGGING IN...</p>
+</div>
+
+<div class="login-wrapper">
+    <div class="art-side">
+        <div class="mewtwo-card">
+            <img src="./mewtwo.png" alt="Mewtwo">
+        </div>
+    </div>
+
+    <div class="login-card">
+        <!-- autocomplete="on" helps saved credentials / autofill -->
+        <form id="loginForm" autocomplete="on">
+            <div class="login-header">
+                <h1>POKÉ<span>RETRO</span></h1>
+                <p>Access your trainer data.</p>
+            </div>
+
+            <!-- Status line (errors / success) -->
+            <div id="formStatus" class="status-message"></div>
+
+            <div class="form-group">
+                <label for="email">EMAIL ADDRESS</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    autocomplete="email"
+                    placeholder="ash.ketchum@pallet.com"
+                    required
+                >
+            </div>
+
+            <!-- Trainer name field is aesthetic only, not used for Supabase auth -->
+            <div class="form-group">
+                <label for="trainerName">TRAINER NAME</label>
+                <input
+                    type="text"
+                    id="trainerName"
+                    name="username"
+                    autocomplete="username"
+                    placeholder="e.g. Red_96"
+                    required
+                >
+            </div>
+
+            <div class="form-group" style="position: relative;">
+                <label for="password">PASSCODE</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="current-password"
+                    autocomplete="current-password"
+                    placeholder="••••••••"
+                    required
+                >
+                <span id="togglePassword"
+                      style="position: absolute; right: 15px; top: 48px; cursor: pointer; color: var(--text-muted); font-size: 0.6rem; font-family: 'Press Start 2P';">
+                    SHOW
+                </span>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" id="submit-btn" class="btn submit-btn">SIGN IN</button>
+                <a href="signup.html" class="btn register-btn">NEW TRAINER? CREATE ACCOUNT</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+window.onload = function() {
+    // --- SUPABASE CONFIG (same as your other pages) ---
+    const SUPABASE_URL = 'https://glppkibaawrquvytvnrg.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdscHBraWJhYXdycXV2eXR2bnJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MjEzOTIsImV4cCI6MjA4NzQ5NzM5Mn0.1q6Fby1XiFUS83n-1JpIfBjLB49ucTSSbu2hfB_dU8k';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const loginForm = document.getElementById('loginForm');
+    const loader = document.getElementById('loader');
+    const formStatus = document.getElementById('formStatus');
+    const emailInput = document.getElementById('email');
+    const trainerNameInput = document.getElementById('trainerName');
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('togglePassword');
+    const submitBtn = document.getElementById('submit-btn');
+
+    function setStatus(message, type) {
+        if (!message) {
+            formStatus.textContent = '';
+            formStatus.className = 'status-message';
+            formStatus.style.display = 'none';
+            return;
+        }
+        formStatus.textContent = message;
+        formStatus.className = 'status-message ' + type + ' show';
+        formStatus.style.display = 'block';
+    }
+
+    // Toggle password visibility
+    togglePassword.onclick = () => {
+        const isPass = passwordInput.type === 'password';
+        passwordInput.type = isPass ? 'text' : 'password';
+        togglePassword.innerText = isPass ? 'HIDE' : 'SHOW';
+    };
+
+    loginForm.onsubmit = async (e) => {
+        e.preventDefault();
+        setStatus('', '');
+        submitBtn.disabled = true;
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        const trainerName = trainerNameInput.value.trim(); // not used for auth, but you can log/use later
+
+        if (!email || !password || !trainerName) {
+            submitBtn.disabled = false;
+            setStatus('PLEASE FILL IN ALL FIELDS.', 'error');
+            return;
+        }
+
+        loader.style.display = 'flex';
+
+        try {
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email,
+                password
+            });
+
+            if (error) {
+                loader.style.display = 'none';
+                submitBtn.disabled = false;
+
+                const msg = error.message.toLowerCase();
+                if (msg.includes('invalid login credentials')) {
+                    setStatus('INVALID EMAIL OR PASSCODE.', 'error');
+                } else {
+                    setStatus('LOGIN ERROR: ' + error.message.toUpperCase(), 'error');
+                }
+                return;
+            }
+
+            loader.style.display = 'none';
+            submitBtn.disabled = false;
+
+            setStatus('WELCOME BACK, TRAINER!', 'success');
+
+            // Redirect to homepage after short delay
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1200);
+
+        } catch (err) {
+            loader.style.display = 'none';
+            submitBtn.disabled = false;
+            console.error('Unexpected login error:', err);
+            setStatus('UNEXPECTED ERROR. CHECK CONSOLE FOR DETAILS.', 'error');
+        }
+    };
+};
+</script>
+</body>
+</html>

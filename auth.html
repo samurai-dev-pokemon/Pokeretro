@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="./Master-Ball.ico">
+  <meta charset="UTF-8" />
+  <title>Trainer Confirmed | PokéRetro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg-color: #0f1015;
+      --card-bg: #1c1e26;
+      --primary-red: #ff3b30;
+      --primary-yellow: #ffcc00;
+      --primary-green: #4cd964;
+      --text-main: #ffffff;
+      --text-muted: #9ba1a6;
+      --accent-purple: #a136ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: var(--bg-color);
+      background-image:
+        radial-gradient(circle at 15% 50%, rgba(255, 59, 48, 0.05), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(255, 204, 0, 0.05), transparent 25%);
+      min-height: 100vh;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      overflow: hidden;
+    }
+
+    /* Glowing background orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(45px);
+      opacity: 0.35;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .orb.red {
+      width: 420px;
+      height: 420px;
+      background: rgba(255, 59, 48, 0.9);
+      top: -100px;
+      left: -80px;
+    }
+    .orb.yellow {
+      width: 360px;
+      height: 360px;
+      background: rgba(255, 204, 0, 0.9);
+      bottom: -80px;
+      right: -60px;
+    }
+
+    /* Main card container ---------------------------------------- */
+    .confirm-wrapper {
+      position: relative;
+      max-width: 720px;
+      width: 100%;
+      z-index: 1;
+      animation: fadeUp 0.6s ease-out;
+    }
+
+    .confirm-card {
+      position: relative;
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 60%),
+        var(--card-bg);
+      border-radius: 24px;
+      padding: 2.4rem 2.6rem 2.2rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow:
+        0 28px 65px rgba(0, 0, 0, 0.88),
+        0 0 0 1px rgba(255, 255, 255, 0.04);
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 2.2rem;
+      align-items: center;
+    }
+
+    @media (max-width: 780px) {
+      .confirm-card {
+        grid-template-columns: 1fr;
+        padding: 2rem 1.6rem 1.9rem;
+      }
+    }
+
+    /* Left side: text ------------------------------------------- */
+    .text-side {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .logo {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.9rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      opacity: 0.85;
+    }
+    .logo span {
+      color: var(--primary-red);
+    }
+    .logo-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--primary-yellow);
+      box-shadow: 0 0 10px rgba(255, 204, 0, 0.9);
+    }
+
+    .title {
+      margin-top: 0.6rem;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 1.3rem;
+      line-height: 1.5;
+    }
+    .title span {
+      color: var(--primary-green);
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-top: 0.3rem;
+    }
+
+    .badge-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid rgba(76, 217, 100, 0.8);
+      background: rgba(76, 217, 100, 0.12);
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      color: var(--primary-green);
+    }
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--primary-green);
+      box-shadow: 0 0 12px rgba(76, 217, 100, 0.9);
+    }
+
+    /* Right side: Pokéball / check ------------------------------ */
+    .graphic-side {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pokeball-shell {
+      position: relative;
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.45), transparent 55%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translateY(0);
+      animation: float 3.5s ease-in-out infinite;
+    }
+
+    .halo {
+      position: absolute;
+      inset: -14px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        rgba(255, 204, 0, 0.3),
+        rgba(255, 59, 48, 0.35),
+        rgba(161, 54, 255, 0.4),
+        rgba(255, 204, 0, 0.3)
+      );
+      filter: blur(18px);
+      opacity: 0.9;
+      z-index: -1;
+    }
+
+    .pokeball-main {
+      width: 132px;
+      height: 132px;
+      border-radius: 50%;
+      background: #fff;
+      border: 4px solid #20232f;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 14px 26px rgba(0,0,0,0.75),
+        0 0 0 5px rgba(15,16,21,0.9);
+    }
+
+    .pokeball-main::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 50%;
+      background: linear-gradient(180deg, #ff6b6b, var(--primary-red));
+      border-bottom: 4px solid #20232f;
+    }
+
+    .pokeball-center-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 34px;
+      height: 34px;
+      background: #f5f5f5;
+      border-radius: 50%;
+      border: 4px solid #20232f;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pokeball-center-inner {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .checkmark {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: scale(0.1) rotate(-10deg);
+      opacity: 0;
+      animation: checkPop 0.7s ease-out 0.25s forwards;
+    }
+
+    .checkmark::before {
+      content: "";
+      display: block;
+      width: 8px;
+      height: 16px;
+      border-right: 3px solid var(--primary-green);
+      border-bottom: 3px solid var(--primary-green);
+      transform: rotate(40deg) translateY(-1px);
+      transform-origin: center;
+      box-shadow: 0 0 8px rgba(76, 217, 100, 0.8);
+    }
+
+    /* CTA button -------------------------------------------------- */
+    .actions {
+      margin-top: 1.6rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .btn-main {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.95rem 1.7rem;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, var(--primary-yellow), #ffe680);
+      color: #000;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.8);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
+      text-decoration: none;
+    }
+    .btn-main:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.9);
+      filter: brightness(1.03);
+    }
+
+    .btn-sub {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    /* Animations -------------------------------------------------- */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-12px); }
+    }
+
+    @keyframes checkPop {
+      0%   { transform: scale(0.1) rotate(-10deg); opacity: 0; }
+      60%  { transform: scale(1.2) rotate(3deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Soft background orbs -->
+  <div class="orb red"></div>
+  <div class="orb yellow"></div>
+
+  <main class="confirm-wrapper">
+    <section class="confirm-card">
+      <div class="text-side">
+        <div class="logo">
+          <span>Poké</span>Retro
+          <span class="logo-dot"></span>
+        </div>
+
+        <h1 class="title">
+          TRAINER <span>CONFIRMED</span>
+        </h1>
+
+        <p class="subtitle">
+          Your email has been verified and your Trainer ID is now active.
+          You’re ready to access the full PokéRetro experience and start
+          your adventure.
+        </p>
+
+        <div class="badge-line">
+          <div class="status-pill">
+            <span class="status-dot"></span>
+            STATUS: ONLINE
+          </div>
+          <span>Account synced with PokéRetro League records.</span>
+        </div>
+
+        <div class="actions">
+          <!-- Change href if your login page is named differently -->
+          <button id="loginBtn" class="btn-main">
+            PROCEED TO LOGIN
+          </button>
+          <span class="btn-sub">
+            You’ll be redirected to the login screen.
+          </span>
+        </div>
+      </div>
+
+      <div class="graphic-side">
+        <div class="pokeball-shell">
+          <div class="halo"></div>
+          <div class="pokeball-main">
+            <div class="pokeball-center-ring">
+              <div class="pokeball-center-inner">
+                <div class="checkmark"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    // Button click -> redirect to login page
+    const loginBtn = document.getElementById('loginBtn');
+
+    loginBtn.addEventListener('click', () => {
+      // Change this if your login file has a different name or path
+      window.location.href = 'login.html';
+    });
+
+    // Optional: auto-redirect after a few seconds
+    // setTimeout(() => {
+    //   window.location.href = 'login.html';
+    // }, 5000);
+  </script>
+</body>
+</html>

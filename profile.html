@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile | PokéRetro</title>
+<link rel="icon" type="image/x-icon" href="./Master-Ball.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+    --bg-color: #0f1015;
+    --card-bg: #1c1e26;
+    --primary-yellow: #ffcc00;
+    --primary-green: #4cd964;
+    --primary-red: #ff3b30;
+    --text-main: #ffffff;
+    --text-muted: #9ba1a6;
+    --psychic-glow: #a136ff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background: var(--bg-color);
+    background-image:
+        radial-gradient(circle at 15% 50%, rgba(255, 59, 48, 0.07), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(255, 204, 0, 0.07), transparent 25%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 0;
+    color: var(--text-main);
+}
+
+.wrapper {
+    display: flex;
+    gap: 4rem;
+    max-width: 1350px;
+    width: 95%;
+    padding: 3rem 4rem;
+    border-radius: 30px;
+    background:
+        radial-gradient(circle at top left, rgba(255,59,48,0.15), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(161,54,255,0.15), transparent 55%),
+        rgba(9, 10, 15, 0.96);
+    box-shadow: 0 40px 90px rgba(0,0,0,0.85);
+}
+
+.art-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.art-side img {
+    width: 100%;
+    max-width: 420px;
+    filter: drop-shadow(0 0 30px var(--psychic-glow));
+}
+
+.card {
+    flex: 1.2;
+    max-width: 720px;
+    background: var(--card-bg);
+    border-radius: 28px;
+    padding: 3rem 3.2rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 30px 70px rgba(0,0,0,0.75);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    font-family: 'Press Start 2P';
+    font-size: 1.2rem;
+    margin-bottom: 0.6rem;
+}
+
+.header p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.avatar-circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 3px solid rgba(255,255,255,0.12);
+    background: radial-gradient(circle at top, #2a2d38, #1c1e26);
+    transition: 0.2s;
+}
+
+.avatar-circle:hover {
+    border-color: var(--primary-yellow);
+    box-shadow: 0 0 20px rgba(255,204,0,0.6);
+}
+
+.avatar-circle img {
+    width: 115px;
+    height: 115px;
+    object-fit: contain;
+}
+
+label {
+    font-family: 'Press Start 2P';
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 0.6rem;
+}
+
+input {
+    width: 100%;
+    padding: 1.1rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(0,0,0,0.3);
+    color: white;
+    margin-bottom: 1.6rem;
+    font-size: 0.95rem;
+}
+
+input:focus {
+    border-color: var(--primary-yellow);
+    box-shadow: 0 0 0 2px rgba(255,204,0,0.4);
+    outline: none;
+}
+
+.btn {
+    width: 100%;
+    padding: 1.1rem;
+    border-radius: 60px;
+    border: none;
+    font-family: 'Press Start 2P';
+    font-size: 0.7rem;
+    cursor: pointer;
+    margin-bottom: 1.4rem;
+    transition: 0.2s;
+}
+
+.primary {
+    background: linear-gradient(135deg, var(--primary-yellow), #ffe680);
+    color: black;
+}
+
+.primary:hover {
+    transform: translateY(-2px);
+}
+
+.ghost {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--text-muted);
+}
+
+.section {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+}
+
+.section.open {
+    max-height: 500px;
+}
+
+.status {
+    text-align: center;
+    font-family: 'Press Start 2P';
+    font-size: 0.6rem;
+    margin-top: 0.5rem;
+}
+
+.success { color: var(--primary-green); }
+.error { color: var(--primary-red); }
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    width: min(950px, 95%);
+    background: #111217;
+    border-radius: 18px;
+    padding: 24px;
+    max-height: 80vh;
+    overflow: auto;
+}
+
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 14px;
+}
+
+.avatar-item {
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    background: rgba(255,255,255,0.03);
+    transition: 0.2s;
+}
+
+.avatar-item:hover {
+    border-color: var(--primary-yellow);
+    transform: translateY(-5px);
+}
+
+.avatar-item.selected {
+    border-color: var(--primary-yellow);
+}
+
+.avatar-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    display: block;
+    margin: auto;
+}
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+<div class="art-side">
+<img src="./mewtwo.png" alt="Mewtwo">
+</div>
+
+<div class="card">
+
+<div class="header">
+<div id="avatarCircle" class="avatar-circle"></div>
+<h1>TRAINER PROFILE</h1>
+<p>Update your trainer identity.</p>
+</div>
+
+<label>TRAINER NAME</label>
+<input id="trainerName">
+
+<button class="btn primary" id="saveProfile">SAVE CHANGES</button>
+
+<button class="btn ghost" id="toggleEmail">CHANGE EMAIL</button>
+<div class="section" id="emailSection">
+<input id="newEmail" placeholder="New Email">
+<input type="password" id="emailPassword" placeholder="Current Password">
+<button class="btn primary" id="saveEmail">UPDATE EMAIL</button>
+</div>
+
+<button class="btn ghost" id="togglePassword">CHANGE PASSWORD</button>
+<div class="section" id="passwordSection">
+<input type="password" id="currentPassword" placeholder="Current Password">
+<input type="password" id="newPassword" placeholder="New Password">
+<input type="password" id="confirmPassword" placeholder="Confirm Password">
+<button class="btn primary" id="savePassword">UPDATE PASSWORD</button>
+</div>
+
+<div id="status" class="status"></div>
+
+</div>
+</div>
+
+<div class="modal" id="avatarModal">
+<div class="modal-content">
+<div class="avatar-grid" id="avatarGrid"></div>
+</div>
+</div>
+
+<script>
+window.onload = async function(){
+
+const supabaseClient = supabase.createClient(
+'https://glppkibaawrquvytvnrg.supabase.co',
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdscHBraWJhYXdycXV2eXR2bnJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MjEzOTIsImV4cCI6MjA4NzQ5NzM5Mn0.1q6Fby1XiFUS83n-1JpIfBjLB49ucTSSbu2hfB_dU8k'
+);
+
+const avatarCircle = document.getElementById('avatarCircle');
+const avatarModal = document.getElementById('avatarModal');
+const avatarGrid = document.getElementById('avatarGrid');
+const trainerNameEl = document.getElementById('trainerName');
+const statusEl = document.getElementById('status');
+
+let selectedAvatar = null;
+
+function artworkUrl(id){
+return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+}
+
+/* ✅ ALL STARTERS FINAL EVOS + LEGENDARIES GEN 1–5 */
+const avatars = [
+
+/* Starters Final Evos */
+// Gen 1
+3,6,9,
+// Gen 2
+154,157,160,
+// Gen 3
+254,257,260,
+// Gen 4
+389,392,395,
+// Gen 5
+497,500,503,
+
+/* Legendaries */
+// Gen 1
+144,145,146,150,
+// Gen 2
+243,244,245,249,250,
+// Gen 3
+377,378,379,380,381,382,383,384,
+// Gen 4
+480,481,482,483,484,485,486,487,488,
+// Gen 5
+638,639,640,641,642,643,644,645,646,648,649
+];
+
+avatars.forEach(id=>{
+const div=document.createElement('div');
+div.className='avatar-item';
+div.innerHTML=`<img src="${artworkUrl(id)}">`;
+div.onclick=()=>{
+document.querySelectorAll('.avatar-item').forEach(a=>a.classList.remove('selected'));
+div.classList.add('selected');
+selectedAvatar={id,image:artworkUrl(id)};
+avatarCircle.innerHTML=`<img src="${artworkUrl(id)}">`;
+avatarModal.style.display='none';
+};
+avatarGrid.appendChild(div);
+});
+
+avatarCircle.onclick=()=>avatarModal.style.display='flex';
+avatarModal.onclick=(e)=>{if(e.target===avatarModal)avatarModal.style.display='none';};
+
+const { data:{session} } = await supabaseClient.auth.getSession();
+if(!session){window.location.href="login.html";return;}
+
+const user=session.user;
+
+trainerNameEl.value=user.user_metadata?.trainer_name||"";
+selectedAvatar=user.user_metadata?.avatar||null;
+
+if(selectedAvatar?.image){
+avatarCircle.innerHTML=`<img src="${selectedAvatar.image}">`;
+}
+
+/* Toggles */
+document.getElementById('toggleEmail').onclick=()=>{
+document.getElementById('emailSection').classList.toggle('open');
+};
+
+document.getElementById('togglePassword').onclick=()=>{
+document.getElementById('passwordSection').classList.toggle('open');
+};
+
+/* ✅ SAVE PROFILE (NO REFRESH SESSION) */
+document.getElementById('saveProfile').onclick=async()=>{
+const name=trainerNameEl.value.trim();
+if(!name)return;
+
+await supabaseClient.auth.updateUser({
+data:{trainer_name:name,avatar:selectedAvatar}
+});
+
+statusEl.textContent="PROFILE UPDATED!";
+statusEl.className="status success";
+
+/* ✅ Just redirect — keep session intact */
+setTimeout(()=>window.location.href="index.html",1000);
+};
+
+/* Password Update */
+document.getElementById('savePassword').onclick=async()=>{
+const current=document.getElementById('currentPassword').value;
+const newPass=document.getElementById('newPassword').value;
+const confirm=document.getElementById('confirmPassword').value;
+
+if(newPass!==confirm){
+statusEl.textContent="PASSWORDS DO NOT MATCH";
+statusEl.className="status error";
+return;
+}
+
+const {error}=await supabaseClient.auth.signInWithPassword({
+email:user.email,
+password:current
+});
+
+if(error){
+statusEl.textContent="WRONG CURRENT PASSWORD";
+statusEl.className="status error";
+return;
+}
+
+await supabaseClient.auth.updateUser({password:newPass});
+statusEl.textContent="PASSWORD UPDATED";
+statusEl.className="status success";
+};
+
+};
+</script>
+
+</body>
+</html>

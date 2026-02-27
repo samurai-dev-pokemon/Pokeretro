@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Register | PokéRetro</title>
+<link rel="icon" type="image/x-icon" href="./Master-Ball.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Supabase UMD (global `supabase`) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --bg-color: #0f1015;
+            --card-bg: #1c1e26;
+            --primary-red: #ff3b30;
+            --primary-yellow: #ffcc00;
+            --primary-green: #4cd964;
+            --text-main: #ffffff;
+            --text-muted: #9ba1a6;
+            --psychic-glow: #a136ff;
+            --mewtwo-card-bg: #1a0b2e;
+        }
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background-color: var(--bg-color);
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(255, 59, 48, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(255, 204, 0, 0.05), transparent 25%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            overflow-x: hidden;
+            padding: 1.5rem 0;
+        }
+
+        /* Loader ---------------------------------------------------- */
+        .loader-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 16, 21, 0.9);
+            display: none; justify-content: center; align-items: center;
+            z-index: 9999; flex-direction: column;
+        }
+        .pokeball {
+            width: 60px; height: 60px;
+            background: #fff; border: 3px solid #333;
+            border-radius: 50%; position: relative;
+            animation: spin 1s linear infinite;
+        }
+        .pokeball::before {
+            content: ""; position: absolute;
+            background: var(--primary-red); width: 100%; height: 50%;
+            border-radius: 30px 30px 0 0; border-bottom: 3px solid #333;
+        }
+        .pokeball::after {
+            content: ""; position: absolute; top: 50%; left: 50%;
+            width: 15px; height: 15px; background: #fff;
+            border: 3px solid #333; border-radius: 50%;
+            transform: translate(-50%, -50%); z-index: 10;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Layout ---------------------------------------------------- */
+        .login-wrapper {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            gap: 4rem;
+            max-width: 1150px;
+            width: 95%;
+            padding: 2rem 2.5rem;
+            border-radius: 24px;
+            background: radial-gradient(circle at top left, rgba(255,59,48,0.18), transparent 55%),
+                        radial-gradient(circle at bottom right, rgba(161,54,255,0.15), transparent 55%),
+                        rgba(9, 10, 15, 0.95);
+            box-shadow: 0 28px 60px rgba(0,0,0,0.75);
+            animation: fadeUp 0.4s ease-out;
+        }
+
+        .art-side {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mewtwo-card {
+            background: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 55%), var(--mewtwo-card-bg);
+            border: 2px solid rgba(161, 54, 255, 0.4);
+            border-radius: 24px;
+            padding: 30px 24px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 360px;
+            width: 100%;
+            animation: fadeUp 0.5s ease-out;
+        }
+        .art-side img {
+            width: 100%;
+            max-width: 320px;
+            filter: drop-shadow(0 0 18px var(--psychic-glow));
+            display: block;
+        }
+
+        .login-card {
+            flex: 1.2;
+            max-width: 560px;
+            background: radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 60%), var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 2.3rem 2.7rem 2.4rem;
+            box-shadow: 0 24px 55px rgba(0,0,0,0.65);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: fadeUp 0.6s ease-out;
+        }
+
+        /* Header & Avatar ------------------------------------------- */
+        .login-header {
+            text-align: center;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .avatar-circle {
+            width: 110px; height: 110px; border-radius: 50%;
+            background: radial-gradient(circle at top, rgba(255,255,255,0.09), rgba(255,255,255,0.01));
+            border: 3px solid rgba(255,255,255,0.09);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+        }
+        .avatar-circle:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+        .avatar-circle img {
+            width: 92px; height: 92px; object-fit: contain; border-radius: 50%;
+        }
+        .avatar-circle .placeholder {
+            color: var(--text-muted);
+            font-family: 'Press Start 2P';
+            font-size: 0.55rem;
+            text-align: center;
+            padding: 0.4rem;
+        }
+
+        .avatar-circle.avatar-selected {
+            border-color: var(--primary-yellow);
+            box-shadow: 0 0 16px rgba(255, 204, 0, 0.7);
+        }
+        .avatar-circle.avatar-error {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 16px rgba(255, 107, 107, 0.9);
+        }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20%,60% { transform: translateX(-4px); }
+            40%,80% { transform: translateX(4px); }
+        }
+        .avatar-circle.shake {
+            animation: shake 0.35s;
+        }
+
+        .login-header h1 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.15rem;
+            margin: 0;
+        }
+        .login-header h1 span {
+            color: var(--primary-yellow);
+            margin-left: 0.35rem;
+        }
+        .login-header p {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            margin: 0;
+        }
+
+        /* Status message -------------------------------------------- */
+        .status-message {
+            margin: 0.6rem auto 1.4rem;
+            font-size: 0.6rem;
+            font-family: 'Press Start 2P', cursive;
+            text-align: center;
+            padding: 0.6rem 0.8rem;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            display: none;
+            max-width: 100%;
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .status-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .status-message.success {
+            display: block;
+            color: var(--primary-green);
+            background: rgba(76, 217, 100, 0.08);
+            border-color: rgba(76, 217, 100, 0.6);
+        }
+        .status-message.error {
+            display: block;
+            color: #ff6b6b;
+            background: rgba(255, 59, 48, 0.08);
+            border-color: rgba(255, 59, 48, 0.6);
+        }
+
+        /* Form fields ----------------------------------------------- */
+        .form-group { margin-bottom: 1.2rem; width: 100%; }
+        .form-group label {
+            display: block;
+            font-size: 0.63rem;
+            font-family: 'Press Start 2P', cursive;
+            margin-bottom: 0.7rem;
+            color: var(--text-muted);
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.95rem 1rem;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            color: white;
+            outline: none;
+            box-sizing: border-box;
+            font-size: 0.85rem;
+        }
+        .form-group input:focus {
+            border-color: var(--primary-yellow);
+            box-shadow: 0 0 0 1px rgba(255, 204, 0, 0.5);
+        }
+
+        .field-note {
+            margin-top: 6px;
+            font-size: 0.52rem;
+            font-family: 'Press Start 2P', cursive;
+            color: var(--text-muted);
+        }
+
+        /* Password section ------------------------------------------ */
+        .hp-bar-container {
+            width: 100%;
+            height: 10px;
+            background: #333;
+            border: 2px solid #555;
+            margin-top: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .hp-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--primary-red);
+            transition: width 0.3s, background 0.3s;
+        }
+
+        /* Buttons --------------------------------------------------- */
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            margin-top: 1.9rem;
+        }
+        .btn {
+            width: 100%;
+            padding: 1.05rem 1.3rem;
+            border-radius: 50px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.72rem;
+            cursor: pointer;
+            transition: 0.25s;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            text-decoration: none;
+            letter-spacing: 0.08em;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-yellow), #ffe680);
+            color: #000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 36px rgba(0,0,0,0.75);
+        }
+        .submit-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+        .back-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .back-btn:hover {
+            border-color: var(--primary-yellow);
+            color: var(--primary-yellow);
+            transform: translateY(-1px);
+        }
+
+        /* Avatar picker modal --------------------------------------- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            display: none; align-items: center; justify-content: center; z-index: 2000;
+        }
+        .modal {
+            width: min(920px, 95%);
+            max-height: 85vh;
+            background: #111217;
+            border-radius: 14px;
+            padding: 18px 18px 22px;
+            overflow: auto;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 24px 55px rgba(0,0,0,0.8);
+        }
+        .modal h3 {
+            font-family: 'Press Start 2P';
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin: 0 0 12px 0;
+            text-align: center;
+        }
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 12px;
+            padding: 8px;
+        }
+        .avatar-item {
+            background: rgba(255,255,255,0.02);
+            border-radius: 10px;
+            padding: 10px;
+            display:flex;
+            flex-direction: column;
+            align-items:center;
+            gap:8px;
+            cursor:pointer;
+            transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
+            border: 2px solid transparent;
+        }
+        .avatar-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .avatar-item.selected {
+            border-color: var(--primary-yellow);
+            box-shadow: 0 8px 24px rgba(255,204,0,0.16);
+        }
+        .avatar-item img {
+            width: 72px; height: 72px; object-fit: contain;
+        }
+        .avatar-item .name {
+            font-size: 0.6rem;
+            font-family: 'Press Start 2P';
+            color: var(--text-muted);
+            text-align:center;
+        }
+
+        /* Animations ------------------------------------------------ */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1000px) {
+            .login-wrapper {
+                flex-direction: column;
+                gap: 2.5rem;
+                padding: 1.7rem 1.5rem;
+            }
+            .login-card {
+                max-width: 100%;
+            }
+            .art-side {
+                order: -1;
+            }
+        }
+        @media (max-width: 600px) {
+            .login-card {
+                padding: 1.7rem 1.4rem 2rem;
+            }
+            .login-header h1 { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="loader-overlay" id="loader">
+    <div class="pokeball"></div>
+    <p style="font-family: 'Press Start 2P'; font-size: 0.7rem; margin-top: 20px;">REGISTERING TRAINER...</p>
+</div>
+
+<div class="login-wrapper">
+    <div class="art-side">
+        <div class="mewtwo-card">
+            <img src="./mewtwo.png" alt="Mewtwo">
+        </div>
+    </div>
+
+    <div class="login-card">
+        <!-- autocomplete="on" helps Chrome/Google offer password suggestions -->
+        <form id="signupForm" autocomplete="on">
+            <div class="login-header">
+                <div id="avatarCircle" class="avatar-circle" title="Pick your starter / avatar">
+                    <div class="placeholder">PICK<br>STARTER</div>
+                </div>
+
+                <h1>NEW<span>TRAINER</span></h1>
+                <p>Start your journey with your own trainer card.</p>
+            </div>
+
+            <!-- Status line (errors / success) -->
+            <div id="formStatus" class="status-message"></div>
+
+            <input type="hidden" id="avatarInput" name="avatar" value="">
+
+            <div class="form-group">
+                <label for="username">TRAINER NAME</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    autocomplete="username"
+                    placeholder="e.g. Red_96"
+                    required
+                >
+                <p id="usernameStatus" class="field-note"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="email">EMAIL ADDRESS</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    autocomplete="email"
+                    placeholder="ash.ketchum@pallet.com"
+                    required
+                >
+            </div>
+
+            <div class="form-group" style="position: relative;">
+                <label for="password">PASSCODE</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="new-password"
+                    autocomplete="new-password"
+                    placeholder="••••••••"
+                    required
+                >
+                <span id="togglePassword"
+                      style="position: absolute; right: 15px; top: 48px; cursor: pointer; color: var(--text-muted); font-size: 0.6rem; font-family: 'Press Start 2P';">
+                    SHOW
+                </span>
+
+                <div class="hp-bar-container">
+                    <div id="hp-fill" class="hp-fill"></div>
+                </div>
+                <p id="strength-text"
+                   style="font-size: 0.5rem; margin-top: 5px; color: var(--text-muted); font-family: 'Press Start 2P';">
+                    STRENGTH: EMPTY
+                </p>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" id="submit-btn" class="btn submit-btn" disabled>CREATE ACCOUNT</button>
+                <a href="login.html" class="btn back-btn">ALREADY A TRAINER?</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Avatar Picker Modal -->
+<div class="modal-overlay" id="avatarModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="avatarModalTitle">
+        <h3 id="avatarModalTitle">Choose Your Starter / Legendary (Gen I–IV)</h3>
+        <div class="avatar-grid" id="avatarGrid">
+            <!-- JS populates -->
+        </div>
+    </div>
+</div>
+
+<script>
+window.onload = function() {
+
+    const SUPABASE_URL = 'https://glppkibaawrquvytvnrg.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdscHBraWJhYXdycXV2eXR2bnJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MjEzOTIsImV4cCI6MjA4NzQ5NzM5Mn0.1q6Fby1XiFUS83n-1JpIfBjLB49ucTSSbu2hfB_dU8k';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const usernameInput = document.getElementById('username');
+    const usernameStatus = document.getElementById('usernameStatus');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const hpFill = document.getElementById('hp-fill');
+    const strengthText = document.getElementById('strength-text');
+    const submitBtn = document.getElementById('submit-btn');
+    const toggleBtn = document.getElementById('togglePassword');
+    const signupForm = document.getElementById('signupForm');
+    const loader = document.getElementById('loader');
+    const formStatus = document.getElementById('formStatus');
+
+    const avatarModal = document.getElementById('avatarModal');
+    const avatarGrid = document.getElementById('avatarGrid');
+    const avatarCircle = document.getElementById('avatarCircle');
+    const avatarInput = document.getElementById('avatarInput');
+
+    function setStatus(message, type) {
+        if (!message) {
+            formStatus.textContent = '';
+            formStatus.className = 'status-message';
+            formStatus.style.display = 'none';
+            return;
+        }
+        formStatus.textContent = message;
+        formStatus.className = 'status-message ' + type + ' show';
+        formStatus.style.display = 'block';
+    }
+
+    function artworkUrl(id) {
+        return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+    }
+
+    const avatars = [
+        3,6,9,154,157,160,254,257,260,389,392,395,497,500,503,
+        144,145,146,150,
+        243,244,245,249,250,
+        377,378,379,380,381,382,383,384,
+        480,481,482,483,484,485,486,487,488,
+        638,639,640,641,642,643,644,645,646,648,649
+    ];
+
+    let selectedAvatar = null;
+
+    avatars.forEach(id=>{
+        const div=document.createElement('div');
+        div.className='avatar-item';
+        div.innerHTML=`<img src="${artworkUrl(id)}">`;
+        div.onclick=()=>{
+            document.querySelectorAll('.avatar-item')
+                .forEach(a=>a.classList.remove('selected'));
+            div.classList.add('selected');
+
+            selectedAvatar={id,image:artworkUrl(id)};
+            avatarInput.value = JSON.stringify(selectedAvatar);
+
+            avatarCircle.innerHTML=`<img src="${artworkUrl(id)}">`;
+            avatarCircle.classList.add('avatar-selected');
+            avatarModal.style.display='none';
+        };
+        avatarGrid.appendChild(div);
+    });
+
+    avatarCircle.onclick=()=>avatarModal.style.display='flex';
+    avatarModal.onclick=(e)=>{if(e.target===avatarModal)avatarModal.style.display='none';};
+
+    toggleBtn.onclick = () => {
+        const isPass = passwordInput.type === 'password';
+        passwordInput.type = isPass ? 'text' : 'password';
+        toggleBtn.innerText = isPass ? 'HIDE' : 'SHOW';
+    };
+
+    passwordInput.oninput = function() {
+        const val = passwordInput.value;
+        let strength = 0;
+        if (val.length >= 6) strength++;
+        if (/[A-Z]/.test(val)) strength++;
+        if (/[0-9]/.test(val)) strength++;
+        if (/[^A-Za-z0-9]/.test(val)) strength++;
+
+        const widthMap = ['0%', '25%', '50%', '75%', '100%'];
+        const colorMap = ['#555', '#ff3b30', '#ffcc00', '#4cd964', '#a136ff'];
+        const labelMap = ['EMPTY', 'CRITICAL', 'WEAK', 'STRONG', 'LEGENDARY!'];
+
+        const level = Math.min(strength, 4);
+        hpFill.style.width = widthMap[level];
+        hpFill.style.backgroundColor = colorMap[level];
+        strengthText.innerText = "STRENGTH: " + labelMap[level];
+        strengthText.style.color = colorMap[level];
+
+        submitBtn.disabled = (strength < 2);
+    };
+
+    async function isUsernameTaken(username) {
+        const { data } = await supabaseClient
+            .from('profiles')
+            .select('id')
+            .eq('username', username)
+            .limit(1);
+        return data && data.length > 0;
+    }
+
+    signupForm.onsubmit = async (e) => {
+        e.preventDefault();
+        submitBtn.disabled = true;
+
+        const trainerName = usernameInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!trainerName || !email || !password || !selectedAvatar) {
+            submitBtn.disabled = false;
+            setStatus('FILL ALL FIELDS & PICK AN AVATAR.', 'error');
+            return;
+        }
+
+        if (await isUsernameTaken(trainerName)) {
+            submitBtn.disabled = false;
+            setStatus('USERNAME TAKEN.', 'error');
+            return;
+        }
+
+        loader.style.display = 'flex';
+
+        const { data, error } = await supabaseClient.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    trainer_name: trainerName,
+                    avatar: selectedAvatar
+                }
+            }
+        });
+
+        if (error) {
+            loader.style.display = 'none';
+            submitBtn.disabled = false;
+            setStatus(error.message.toUpperCase(), 'error');
+            return;
+        }
+
+        if (data.user) {
+            await supabaseClient.from('profiles').insert({
+                id: data.user.id,
+                username: trainerName,
+                avatar: selectedAvatar
+            });
+        }
+
+        loader.style.display = 'none';
+        setStatus('ACCOUNT CREATED! YOU CAN NOW LOG IN.', 'success');
+
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 2000);
+    };
+};
+</script>
+</body>
+</html>

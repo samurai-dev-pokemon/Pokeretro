@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokémon Emerald | PokéRetro</title>
+<link rel="icon" type="image/x-icon" href="../Master-Ball.ico">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+  --bg-color: #0f1015;
+  --card-bg: #1c1e26;
+  --primary-red: #ff3b30;
+  --primary-yellow: #ffcc00;
+  --text-main: #ffffff;
+  --text-muted: #9ba1a6;
+  --tag-official: #2a82da;
+  --tag-gb: #8bac0f;
+}
+.play-now-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0.85rem 1.2rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: 700;
+  text-decoration:none;
+  transition: all 0.2s ease;
+  margin: 0 0 1.2rem 0;
+}
+
+.play-now-btn:hover{
+  background: var(--primary-yellow);
+  color:#000;
+  border-color: var(--primary-yellow);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(255, 59, 48, 0.07), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(255, 204, 0, 0.07), transparent 25%);
+  min-height:100vh;
+}
+
+/* ===== HEADER (SAME AS INDEX) ===== */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding: 0.9rem 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(15, 16, 21, 0.92);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.logo {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.1rem;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.logo span { color: var(--primary-red); }
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 600;
+}
+.nav-link:hover,
+.nav-link-active { color: var(--primary-yellow); }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.auth-logged-out {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-pill.primary {
+  background: var(--primary-red);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(255, 59, 48, 0.35);
+}
+
+.btn-pill.ghost {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--text-main);
+}
+
+.btn-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.55);
+}
+
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-yellow);
+}
+
+.user-info { display:flex; flex-direction:column; }
+.user-info a{
+  text-decoration:none;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  transition: color 0.2s;
+}
+.user-info a:hover { color: var(--primary-yellow); }
+
+.user-name { font-size: 0.8rem; font-weight: 600; }
+
+.logout-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-align: left;
+}
+.logout-btn:hover { color: var(--primary-yellow); }
+
+.hidden { display:none !important; }
+
+/* Mobile menu toggle (same behavior as index) */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-main);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+@media (max-width: 768px) {
+  .mobile-menu-btn { display:block; }
+  .main-nav {
+    display:flex;
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    background: rgba(15, 16, 21, 0.98);
+    flex-direction:column;
+    padding:1rem 5%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+  .main-nav.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+
+/* ===== PAGE CONTENT (CARD-BASED LIKE INDEX) ===== */
+.container{
+  max-width: 1200px;
+  margin: 2.5rem auto 4rem;
+  padding: 0 5%;
+}
+.card{
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
+}
+.game-layout{
+  display:flex;
+  gap:2rem;
+  flex-wrap:wrap;
+  align-items:flex-start;
+}
+.game-cover{
+  width: 260px;
+  max-width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.game-title{
+  font-family:'Press Start 2P', cursive;
+  font-size: 1.2rem;
+  margin: 0 0 1rem 0;
+}
+.tags{
+  display:flex;
+  gap:0.5rem;
+  flex-wrap:wrap;
+  margin-bottom:1.3rem;
+}
+.tag{
+  font-size:0.75rem;
+  padding:0.3rem 0.8rem;
+  border-radius:12px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+.tag.official{ background: rgba(42, 130, 218, 0.2); color:#5bc0eb; border:1px solid rgba(42,130,218,0.4); }
+.tag.gb{ background: rgba(139, 172, 15, 0.2); color:#9bbc0f; border:1px solid rgba(139,172,15,0.4); }
+
+/* Vote buttons styled like index play buttons */
+.vote-buttons{
+  display:flex;
+  gap:0.75rem;
+  flex-wrap:wrap;
+  margin-bottom:1rem;
+}
+.vote-buttons button{
+  padding:0.8rem 1rem;
+  background: rgba(255,255,255,0.05);
+  color: var(--text-main);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.vote-buttons button:hover{
+  background: var(--primary-yellow);
+  color:#000;
+  border-color: var(--primary-yellow);
+}
+
+/* Stars */
+.stars{ display:flex; gap:6px; font-size:1.5rem; }
+.star{
+  color: rgba(255,255,255,0.15);
+  cursor:pointer;
+  transition: color 0.2s ease;
+}
+.star:hover,
+.star.active{ color: var(--primary-yellow); }
+
+.rating-info{
+  margin-top: 0.4rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.description{
+  margin-top: 1.8rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  font-size: 1rem;
+  max-width: 820px;
+}
+</style>
+</head>
+<body>
+
+<!-- ✅ EXACT INDEX HEADER -->
+<header>
+  <div class="logo">
+    <span>Poké</span>Retro
+  </div>
+
+  <button class="mobile-menu-btn" id="mobile-menu-toggle">☰</button>
+
+  <nav class="main-nav" id="main-nav">
+    <a href="../index.html" class="nav-link">Home</a>
+    <a href="../library.html" class="nav-link">Library</a>
+  </nav>
+
+  <div class="header-actions">
+    <div id="auth-logged-out" class="auth-logged-out">
+      <a href="../login.html" class="btn-pill ghost">Log in</a>
+      <a href="../signup.html" class="btn-pill primary">Sign up</a>
+    </div>
+
+    <div id="auth-logged-in" class="user-area hidden">
+      <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
+      <div class="user-info">
+        <span id="user-name" class="user-name"></span>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <a href="../profile.html">Profile</a>
+          <span style="color: rgba(255,255,255,0.2);">•</span>
+          <button id="logout-btn" class="logout-btn">Log out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="card">
+    <div class="game-layout">
+  
+      <img src="../images/rocket.jpeg" class="game-cover" alt="Pokémon Rocket Edition">
+
+      <div style="flex:1; min-width:260px;">
+        <h1 class="game-title">Pokémon Rocket Edition
+        </h1>
+
+        <div class="tags">
+          <span class="tag official">Hack</span>
+          <span class="tag gb">GBA</span>
+        </div>
+
+        <div class="vote-buttons">
+          <button id="like-btn">👍 <span id="like-count">0</span></button>
+          <button id="dislike-btn">👎 <span id="dislike-count">0</span></button>
+        </div>
+
+        <div class="stars">
+          <span class="star" data-value="1">★</span>
+          <span class="star" data-value="2">★</span>
+          <span class="star" data-value="3">★</span>
+          <span class="star" data-value="4">★</span>
+          <span class="star" data-value="5">★</span>
+        </div>
+
+        <div class="rating-info">
+          <span id="avg-rating">0</span>/5
+          (<span id="rating-count">0</span> ratings)
+        </div>
+
+        <div class="description">
+        Pokémon Rocket Edition is a popular ROM hack of Pokémon Fire Red that puts players in the shoes of a Team Rocket grunt. Instead of following the traditional journey of a Pokémon Trainer, you experience the story from the perspective of the villains, carrying out missions for Team Rocket, stealing Pokémon, and interacting with the criminal underworld of Kanto. The game features a unique storyline that runs parallel to the original Fire Red plot, allowing you to encounter familiar characters and events from a new angle. With custom events, dialogue, and gameplay mechanics focused on the Rocket experience, Pokémon Rocket Edition offers a fresh and engaging twist on the classic Kanto adventure, making it a standout among Pokémon ROM hacks.
+        </div>
+       <a href="../games/rocket.html" class="play-now-btn" style="margin-top: 1.2rem;">PLAY NOW</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ------------------------ SUPABASE SETUP ------------------------ */
+const SUPABASE_URL = 'https://glppkibaawrquvytvnrg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdscHBraWJhYXdycXV2eXR2bnJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MjEzOTIsImV4cCI6MjA4NzQ5NzM5Mn0.1q6Fby1XiFUS83n-1JpIfBjLB49ucTSSbu2hfB_dU8k';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const GAME_ID = "pokemon-rocket"; 
+
+/* ------------------------ HEADER AUTH (SAME AS INDEX) ------------------------ */
+const authLoggedOut = document.getElementById('auth-logged-out');
+const authLoggedIn  = document.getElementById('auth-logged-in');
+const userAvatarEl  = document.getElementById('user-avatar');
+const userNameEl    = document.getElementById('user-name');
+const logoutBtn     = document.getElementById('logout-btn');
+
+const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+const mainNav = document.getElementById('main-nav');
+
+if (mobileMenuToggle) {
+  mobileMenuToggle.addEventListener('click', () => {
+    mainNav.classList.toggle('open');
+  });
+
+  mainNav.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => mainNav.classList.remove('open'));
+  });
+}
+
+function setUser(user) {
+  if (user) {
+    authLoggedOut.classList.add('hidden');
+    authLoggedIn.classList.remove('hidden');
+
+    const meta = user.user_metadata || {};
+    const avatarObj = meta.avatar || null;
+
+    const name =
+      meta.trainer_name ||
+      meta.username ||
+      meta.full_name ||
+      'Trainer';
+
+    const avatarUrl =
+      (avatarObj && avatarObj.image) ||
+      meta.avatar_url ||
+      `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${encodeURIComponent(user.id)}`;
+
+    userNameEl.textContent = name;
+    userAvatarEl.src = avatarUrl;
+    userAvatarEl.alt = `${name}'s avatar`;
+  } else {
+    authLoggedOut.classList.remove('hidden');
+    authLoggedIn.classList.add('hidden');
+    userAvatarEl.src = '';
+    userNameEl.textContent = '';
+  }
+}
+
+async function refreshUser() {
+  try {
+    const { data, error } = await supabaseClient.auth.getUser();
+    if (error) throw error;
+    setUser(data.user);
+  } catch (e) {
+    setUser(null);
+  }
+}
+
+supabaseClient.auth.onAuthStateChange((_event, session) => {
+  setUser(session?.user ?? null);
+});
+
+logoutBtn.addEventListener('click', async () => {
+  const { error } = await supabaseClient.auth.signOut();
+  if (!error) setUser(null);
+});
+
+refreshUser();
+setTimeout(refreshUser, 400);
+
+/* ------------------------ VOTES + RATINGS ------------------------ */
+const likeBtn = document.getElementById("like-btn");
+const dislikeBtn = document.getElementById("dislike-btn");
+const likeCount = document.getElementById("like-count");
+const dislikeCount = document.getElementById("dislike-count");
+
+const stars = document.querySelectorAll(".star");
+const avgRatingEl = document.getElementById("avg-rating");
+const ratingCountEl = document.getElementById("rating-count");
+
+async function loadVotes(){
+  const { data, error } = await supabaseClient
+    .from("game_votes")
+    .select("vote_type")
+    .eq("game_id", GAME_ID);
+
+  if (error) return;
+
+  likeCount.textContent = data.filter(v=>v.vote_type==="like").length;
+  dislikeCount.textContent = data.filter(v=>v.vote_type==="dislike").length;
+}
+
+async function vote(type){
+  const { data:{ user } } = await supabaseClient.auth.getUser();
+  if(!user){ alert("Sign in to vote"); return; }
+
+  const { data:existing } = await supabaseClient
+    .from("game_votes")
+    .select("*")
+    .eq("game_id", GAME_ID)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if(existing){
+    await supabaseClient.from("game_votes")
+      .update({ vote_type:type })
+      .eq("id", existing.id);
+  } else {
+    await supabaseClient.from("game_votes")
+      .insert({ game_id:GAME_ID, user_id:user.id, vote_type:type });
+  }
+
+  loadVotes();
+}
+
+likeBtn.onclick = ()=>vote("like");
+dislikeBtn.onclick = ()=>vote("dislike");
+
+async function loadRatings(){
+  const { data, error } = await supabaseClient
+    .from("game_ratings")
+    .select("rating")
+    .eq("game_id", GAME_ID);
+
+  if (error) return;
+
+  if(!data.length){
+    avgRatingEl.textContent = 0;
+    ratingCountEl.textContent = 0;
+    return;
+  }
+
+  const total = data.reduce((sum,r)=>sum+r.rating,0);
+  avgRatingEl.textContent = (total/data.length).toFixed(1);
+  ratingCountEl.textContent = data.length;
+}
+
+async function rate(value){
+  const { data:{ user } } = await supabaseClient.auth.getUser();
+  if(!user){ alert("Sign in to rate"); return; }
+
+  const { data:existing } = await supabaseClient
+    .from("game_ratings")
+    .select("*")
+    .eq("game_id", GAME_ID)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if(existing){
+    await supabaseClient.from("game_ratings")
+      .update({ rating:value })
+      .eq("id", existing.id);
+  } else {
+    await supabaseClient.from("game_ratings")
+      .insert({ game_id:GAME_ID, user_id:user.id, rating:value });
+  }
+
+  // simple UI highlight
+  stars.forEach(s => s.classList.remove('active'));
+  for (let i = 0; i < value; i++) stars[i].classList.add('active');
+
+  loadRatings();
+}
+
+stars.forEach(star=>{
+  star.onclick=()=>rate(parseInt(star.dataset.value, 10));
+});
+
+loadVotes();
+loadRatings();
+</script>
+
+</body>
+</html>
