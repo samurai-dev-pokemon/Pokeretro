@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PokéRetro | Full Game Library</title>
+<title>PokéRetro | Play Classic & ROM Hack Games</title>
 <link rel="icon" type="image/x-icon" href="./Master-Ball.ico">
 
 <!-- Fonts -->
@@ -31,6 +31,80 @@
   padding: 0;
   box-sizing: border-box;
 }
+/* ... your existing styles ... */
+
+/* Add a profile link in the user area */
+.user-info a {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  transition: color 0.2s;
+}
+
+.user-info a:hover {
+  color: var(--primary-yellow);
+}
+
+/* Mobile menu toggle */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-main);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block;
+  }
+  
+  .main-nav {
+    display: flex; /* Override the display: none */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(15, 16, 21, 0.98);
+    flex-direction: column;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+  
+  .main-nav.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+  }
+}
+
+/* Loading state for games */
+.loading {
+  text-align: center;
+  padding: 4rem;
+  color: var(--text-muted);
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.9rem;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+}
+
+.empty-state h3 {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: var(--text-main);
+}
 
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -38,8 +112,7 @@ body {
   color: var(--text-main);
   background-image:
     radial-gradient(circle at 15% 50%, rgba(255, 59, 48, 0.07), transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(255, 204, 0, 0.07), transparent 25%),
-    radial-gradient(circle at 50% 80%, rgba(142, 68, 173, 0.05), transparent 30%);
+    radial-gradient(circle at 85% 30%, rgba(255, 204, 0, 0.07), transparent 25%);
   min-height: 100vh;
 }
 
@@ -67,7 +140,6 @@ header {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  text-decoration: none;
 }
 
 .logo span {
@@ -75,12 +147,9 @@ header {
 }
 
 .main-nav {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .nav-link {
@@ -90,28 +159,6 @@ header {
   color: var(--text-muted);
   text-decoration: none;
   font-weight: 600;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 2px;
-  background: var(--primary-yellow);
-  transition: width 0.3s ease;
-  border-radius: 2px;
-}
-
-.nav-link:hover::after,
-.nav-link-active::after {
-  width: 80%;
 }
 
 .nav-link:hover,
@@ -217,94 +264,31 @@ header {
   display: none !important;
 }
 
-/* LIBRARY HEADER --------------------------------------------------- */
+/* HERO ------------------------------------------------------------- */
 
 h1, h2 {
   font-family: 'Press Start 2P', cursive;
   line-height: 1.4;
 }
 
-.lib-header {
+.hero {
   text-align: center;
   padding: 5rem 1rem 3rem;
   max-width: 900px;
   margin: 0 auto;
-  position: relative;
 }
 
-.lib-header h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  background: linear-gradient(135deg, var(--text-main) 0%, var(--primary-yellow) 50%, var(--primary-red) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: gradientShift 5s ease infinite;
-  background-size: 200% 200%;
+.hero h1 {
+  font-size: 2.4rem;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 4px 15px rgba(255, 59, 48, 0.3);
 }
 
-@keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-.lib-header p {
+.hero p {
   font-size: 1.05rem;
   color: var(--text-muted);
+  margin-bottom: 2.3rem;
   line-height: 1.7;
-}
-
-/* SEARCH BAR ------------------------------------------------------- */
-
-.search-container {
-  max-width: 500px;
-  margin: 2rem auto 0;
-  position: relative;
-}
-
-.search-input {
-  width: 100%;
-  padding: 1rem 1.5rem 1rem 3rem;
-  background: var(--card-bg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50px;
-  color: var(--text-main);
-  font-size: 0.95rem;
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-.search-input:focus {
-  border-color: var(--primary-red);
-  box-shadow: 0 0 20px rgba(255, 59, 48, 0.2);
-}
-
-.search-input::placeholder {
-  color: var(--text-muted);
-}
-
-.search-icon {
-  position: absolute;
-  left: 1.2rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  font-size: 1rem;
-  pointer-events: none;
-}
-
-/* GAME COUNT ------------------------------------------------------- */
-
-.game-count {
-  text-align: center;
-  padding: 1rem 0 0;
-  color: var(--text-muted);
-  font-size: 0.85rem;
-}
-
-.game-count span {
-  color: var(--primary-yellow);
-  font-weight: 700;
 }
 
 /* FILTERS ---------------------------------------------------------- */
@@ -312,9 +296,9 @@ h1, h2 {
 .filters {
   display: flex;
   justify-content: center;
-  gap: 0.8rem;
+  gap: 1rem;
   flex-wrap: wrap;
-  padding: 2rem 5% 3rem;
+  padding: 0 2rem 3rem;
 }
 
 .filter-btn {
@@ -325,14 +309,13 @@ h1, h2 {
   border-radius: 999px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   font-size: 0.85rem;
 }
 
 .filter-btn:hover {
   border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 140, 0, 0.2);
-  transform: translateY(-2px);
+  background: #ff8c00;
 }
 
 .filter-btn.active {
@@ -345,63 +328,59 @@ h1, h2 {
 
 .games-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 2rem;
   padding: 0 5% 5rem;
   max-width: 1400px;
   margin: 0 auto;
 }
 
-/* FIX FOR HOVER STUTTERING */
 .game-card {
   background: var(--card-bg);
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  
-  /* Prevent stuttering */
-  will-change: transform;
-  transform: translateY(0) translateZ(0);
-  backface-visibility: hidden;
-  -webkit-font-smoothing: subpixel-antialiased;
-  
-  /* Smooth transitions */
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
-              box-shadow 0.4s ease, 
-              border-color 0.3s ease;
-  
-  /* Create stacking context */
-  position: relative;
-  z-index: 1;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.2s ease;
+  animation: fadeIn 0.5s ease forwards;
 }
 
 .game-card:hover {
-  transform: translateY(-12px) translateZ(0);
-  box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.5),
-    0 0 0 1px var(--primary-red),
-    0 0 30px rgba(255, 59, 48, 0.15);
+  transform: translateY(-12px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
   border-color: var(--primary-red);
-  z-index: 2;
 }
 
 .card-image {
-  height: 160px;
+  height: 180px;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
-  background: linear-gradient(135deg, #111 0%, #1a1a2e 100%);
+  background: #111;
 }
 
 .card-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 0.5s ease;
+  z-index: 1;
 }
 
 .game-card:hover .card-image img {
-  transform: scale(1.1);
+  transform: scale(1.08);
+}
+
+.card-image h3 {
+  font-size: 0.9rem;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  z-index: 2;
+  padding: 10px;
 }
 
 .card-image::after {
@@ -410,45 +389,20 @@ h1, h2 {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 70%;
+  height: 60%;
   background: linear-gradient(to top, var(--card-bg) 0%, transparent 100%);
+  z-index: 2;
   pointer-events: none;
-}
-
-/* Card glow effect on hover */
-.game-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 16px;
-  background: linear-gradient(135deg, 
-    rgba(255, 59, 48, 0.1) 0%, 
-    transparent 50%, 
-    rgba(255, 204, 0, 0.1) 100%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.game-card:hover::before {
-  opacity: 1;
 }
 
 .card-content {
   padding: 1.4rem 1.5rem 1.5rem;
-  position: relative;
-  z-index: 1;
 }
 
 .card-content h4 {
-  font-size: 1rem;
+  font-size: 1.1rem;
   margin-bottom: 1rem;
   font-weight: 800;
-  line-height: 1.3;
 }
 
 .tags {
@@ -459,10 +413,10 @@ h1, h2 {
 }
 
 .tag {
-  font-size: 0.7rem;
-  padding: 0.3rem 0.7rem;
-  border-radius: 8px;
-  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -480,35 +434,82 @@ h1, h2 {
   color: var(--text-main);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 0.8rem;
+  transition: all 0.2s ease;
 }
 
 .game-card:hover .play-btn {
   background: var(--primary-yellow);
   color: #000;
   border-color: var(--primary-yellow);
-  box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
 }
 
-/* EMPTY STATE ------------------------------------------------------ */
+/* FULL LIBRARY CTA ------------------------------------------------- */
 
-.empty-state {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 4rem 2rem;
-  color: var(--text-muted);
+.more-games-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0 6rem;
+  position: relative;
 }
 
-.empty-state h3 {
-  font-family: 'Press Start 2P', cursive;
-  font-size: 1rem;
-  margin-bottom: 1rem;
+.library-btn {
+  position: relative;
+  padding: 1.1rem 3rem;
+  background: var(--card-bg);
   color: var(--text-main);
+  text-decoration: none;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  border-radius: 50px;
+  border: 2px solid rgba(255, 59, 48, 0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.library-btn span {
+  position: relative;
+  z-index: 2;
+}
+
+.btn-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: var(--primary-red);
+  box-shadow: 0 0 40px var(--primary-red);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.5s ease, height 0.5s ease;
+  z-index: 1;
+  opacity: 0.4;
+}
+
+.library-btn:hover {
+  transform: scale(1.08) translateY(-5px);
+  border-color: var(--primary-red);
+  box-shadow: 0 15px 30px rgba(255, 59, 48, 0.2);
+  color: white;
+}
+
+.library-btn:hover .btn-glow {
+  width: 260px;
+  height: 260px;
+}
+
+@keyframes pulse-border {
+  0%   { border-color: rgba(255, 59, 48, 0.3); }
+  50%  { border-color: rgba(255, 59, 48, 0.8); }
+  100% { border-color: rgba(255, 59, 48, 0.3); }
+}
+
+.library-btn {
+  animation: pulse-border 2s infinite;
 }
 
 /* FOOTER ----------------------------------------------------------- */
@@ -521,48 +522,15 @@ footer {
   font-size: 0.9rem;
 }
 
-/* ANIMATIONS ------------------------------------------------------- */
+/* ANIMATIONS / RESPONSIVE ----------------------------------------- */
 
-@keyframes fadeInUp {
-  from { 
-    opacity: 0; 
-    transform: translateY(30px) translateZ(0); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateY(0) translateZ(0); 
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
-.game-card {
-  animation: fadeInUp 0.5s ease forwards;
-  opacity: 0;
-}
-
-/* SCROLLBAR -------------------------------------------------------- */
-
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg-color);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--card-bg);
-  border-radius: 5px;
-  border: 2px solid var(--bg-color);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-red);
-}
-
-/* RESPONSIVE ------------------------------------------------------- */
 
 @media (max-width: 900px) {
-  .lib-header h1 { font-size: 1.5rem; }
+  .hero h1 { font-size: 2rem; }
 }
 
 @media (max-width: 768px) {
@@ -572,77 +540,29 @@ footer {
   }
 
   .main-nav {
-    position: static;
-    transform: none;
-    gap: 1rem;
+    display: none; /* keep header cleaner on mobile */
   }
 
-  .logo {
-    font-size: 0.9rem;
-  }
-
-  .nav-link {
-    font-size: 0.7rem;
-    padding: 0.4rem 0.6rem;
-  }
-
-  .auth-logged-out {
-    gap: 0.3rem;
-  }
-
-  .btn-pill {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.65rem;
-  }
-
-  .lib-header {
-    padding-top: 3rem;
-  }
-
-  .games-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .main-nav {
-    display: none;
-  }
-
-  .user-info {
-    display: none;
-  }
-
-  .user-area {
-    padding: 0.2rem;
-    background: transparent;
-    border: none;
-  }
-
-  .filters {
-    gap: 0.5rem;
-    padding: 1.5rem 3% 2rem;
-  }
-
-  .filter-btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.75rem;
+  .hero {
+    padding-top: 4rem;
   }
 }
 </style>
 </head>
 <body>
 
+<!-- Updated Header Section -->
 <header>
-  <a href="index.html" class="logo">
+  <div class="logo">
     <span>Poké</span>Retro
-  </a>
+  </div>
 
-  <nav class="main-nav">
-    <a href="index.html" class="nav-link">Home</a>
-    <a href="library.html" class="nav-link nav-link-active">Library</a>
-     <a href="https://forms.gle/7DkJQVvCr8dKMcuy6" class="nav-link">Reccomendations</a>
+  <button class="mobile-menu-btn" id="mobile-menu-toggle">☰</button>
+
+  <nav class="main-nav" id="main-nav">
+    <a href="index.html" class="nav-link nav-link-active">Home</a>
+    <a href="library.html" class="nav-link">Library</a>
+    <a href="https://forms.gle/7DkJQVvCr8dKMcuy6" class="nav-link">Reccomendations</a>
   </nav>
 
   <div class="header-actions">
@@ -650,7 +570,6 @@ footer {
     <div id="auth-logged-out" class="auth-logged-out">
       <a href="login.html" class="btn-pill ghost">Log in</a>
       <a href="signup.html" class="btn-pill primary">Sign up</a>
-      
     </div>
 
     <!-- Logged IN -->
@@ -658,54 +577,80 @@ footer {
       <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
       <div class="user-info">
         <span id="user-name" class="user-name"></span>
-        <button id="logout-btn" class="logout-btn">Log out</button>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <a href="profile.html">Profile</a>
+          <span style="color: rgba(255,255,255,0.2);">•</span>
+          <button id="logout-btn" class="logout-btn">Log out</button>
+        </div>
       </div>
     </div>
   </div>
 </header>
 
-<section class="lib-header">
-  <h1>Full Game Library</h1>
-  <p>The ultimate collection of Pokémon adventures. Classic releases and fan-made ROM hacks, all playable in your browser.</p>
-  
-  <div class="search-container">
-    <span class="search-icon">🔍</span>
-    <input type="text" class="search-input" id="search-input" placeholder="Search games...">
-  </div>
-  
-  <p class="game-count">Showing <span id="game-count">0</span> games</p>
+<section class="hero">
+  <h1>Gotta Play 'Em All.</h1>
+  <p>
+    Relive your childhood or experience completely new adventures. Play classic releases and
+    fan-made ROM hacks directly in your browser. PokéRetro is your hub for Pokémon games
+    online. Have a game to recommend? Send it through the Google Form.
+  </p>
 </section>
 
 <section class="filters" id="filter-container">
   <button class="filter-btn active" data-filter="all">All Games</button>
-  <button class="filter-btn" data-filter="official">Official</button>
+  <button class="filter-btn" data-filter="official">Official Releases</button>
   <button class="filter-btn" data-filter="hack">ROM Hacks</button>
-  <button class="filter-btn" data-filter="gba">GBA</button>
-  <button class="filter-btn" data-filter="gbc">GBC</button>
-  <button class="filter-btn" data-filter="gb">GB</button>
+  <button class="filter-btn" data-filter="gba">GameBoy Advance</button>
+  <button class="filter-btn" data-filter="gbc">GameBoy Color</button>
+  <button class="filter-btn" data-filter="gb">GameBoy</button>
 </section>
 
 <section class="games-grid" id="games-grid"></section>
 
+<section class="more-games-container">
+  <a href="library.html" class="library-btn">
+    <span>Full Library</span>
+    <div class="btn-glow"></div>
+  </a>
+</section>
+
 <footer>
-  <p>Made by Samurai.Dev . This is a fan-made project.</p>
+  <p>Made by Samurai.Dev. This is a fan-made project.</p>
 </footer>
+
+<!-- Enhanced Script Section -->
 <script type="module">
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
   /* ------------------------ SUPABASE SETUP ------------------------ */
-
   const SUPABASE_URL = 'https://glppkibaawrquvytvnrg.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdscHBraWJhYXdycXV2eXR2bnJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MjEzOTIsImV4cCI6MjA4NzQ5NzM5Mn0.1q6Fby1XiFUS83n-1JpIfBjLB49ucTSSbu2hfB_dU8k';
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  /* ------------------------ DOM ELEMENTS -------------------------- */
   const authLoggedOut = document.getElementById('auth-logged-out');
   const authLoggedIn  = document.getElementById('auth-logged-in');
   const userAvatarEl  = document.getElementById('user-avatar');
   const userNameEl    = document.getElementById('user-name');
   const logoutBtn     = document.getElementById('logout-btn');
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const mainNav = document.getElementById('main-nav');
 
+  /* ------------------------ MOBILE MENU --------------------------- */
+  if (mobileMenuToggle) {
+    mobileMenuToggle.addEventListener('click', () => {
+      mainNav.classList.toggle('open');
+    });
+
+    mainNav.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        mainNav.classList.remove('open');
+      });
+    });
+  }
+
+  /* ------------------------ AUTH LOGIC ---------------------------- */
   function setUser(user) {
     if (user) {
       authLoggedOut.classList.add('hidden');
@@ -727,6 +672,7 @@ footer {
 
       userNameEl.textContent = name;
       userAvatarEl.src = avatarUrl;
+      userAvatarEl.alt = `${name}'s avatar`;
     } else {
       authLoggedOut.classList.remove('hidden');
       authLoggedIn.classList.add('hidden');
@@ -735,150 +681,204 @@ footer {
     }
   }
 
-  async function refreshUser() {
+async function refreshUser() {
+  try {
     const { data, error } = await supabase.auth.getUser();
-    if (error) {
-      console.error('Error fetching user:', error.message);
-      setUser(null);
-      return;
-    }
+    if (error) throw error;
+
     setUser(data.user);
+  } catch (error) {
+    console.error('Error fetching user:', error.message);
+    setUser(null);
   }
+}
+
 
   supabase.auth.onAuthStateChange((_event, session) => {
     setUser(session?.user ?? null);
   });
 
-  logoutBtn?.addEventListener('click', async () => {
-    await supabase.auth.signOut();
-    setUser(null);
+  logoutBtn.addEventListener('click', async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      setUser(null);
+      console.log('Logged out successfully');
+    } catch (error) {
+      console.error('Error logging out:', error.message);
+      alert('Error logging out. Please try again.');
+    }
   });
 
   refreshUser();
 
-  /* ------------------------ GAMES DATA ---------------------------- */
+setTimeout(refreshUser, 500);
 
+  /* ------------------------ GAMES GRID ---------------------------- */
   const games = [
-    { title: "Pokémon Red", type: "official", console: "gb", image: "./images/red.jpeg", url: "./summary/red-summary.html" },
-    { title: "Pokémon Blue", type: "official", console: "gb", image: "./images/blue.jpeg", url: "./summary/blue-summary.html" },
-    { title: "Pokémon Yellow", type: "official", console: "gb", image: "./images/yellow.jpeg", url: "./summary/yellow-summary.html" },
-    { title: "Pokémon Silver", type: "official", console: "gbc", image: "./images/silver.jpg", url: "./summary/silver-summary.html" },
-    { title: "Pokémon Gold", type: "official", console: "gbc", image: "./images/gold.jpeg", url: "./summary/gold-summary.html" },
-    { title: "Pokémon Crystal", type: "official", console: "gbc", image: "./images/crystal.jpeg", url: "./summary/crystal-summary.html" },
-    { title: "Pokémon Fire Red", type: "official", console: "gba", image: "./images/Fire.jpg", url: "./summary/fire-summary.html" },
-    { title: "Pokémon Leaf Green", type: "official", console: "gba", image: "./images/leaf.jpeg", url: "./summary/leaf-summary.html" },
-    { title: "Pokémon Ruby", type: "official", console: "gba", image: "./images/Ruby.png", url: "./summary/ruby-summary.html" },
-    { title: "Pokémon Sapphire", type: "official", console: "gba", image: "./images/sapphire.jpeg", url: "./summary/sapphire-summary.html" },
-    { title: "Pokémon Emerald", type: "official", console: "gba", image: "./images/Emerald.jpeg", url: "./summary/emerald-summary.html" },
-    { title: "Pokémon Unbound", type: "hack", console: "gba", image: "./images/Unbound.jpg", url: "./summary/unbound-summary.html" },
-    { title: "Pokémon Emerald Imperium", type: "hack", console: "gba", image: "./images/Imparuim.jpeg", url: "./summary/imparuim-summary.html" },
-    { title: "Pokémon Radical Red", type: "hack", console: "gba", image: "./images/radical.jpeg", url: "./summary/Radical-red-summary.html" },
-    { title: "Pokémon Rocket Edition (1)", type: "hack", console: "gba", image: "./images/Rocket.jpeg", url: "./summary/rocket-summary.html" },
-
-    /* ✅ FIXED: removed trailing spaces + added missing comma */
-    { title: "Pokémon Rocket Edition (2)", type: "hack", console: "gba", image: "./images/Rocket1.jpeg", url: "./summary/rocket2-summary.html" },
-
-    { title: "Pokémon Roaring Red", type: "hack", console: "gba", image: "./images/roaring.png", url: "./summary/roaring-red-summary.html" },
-    { title: "Pokémon Perfect Fire Red", type: "hack", console: "gba", image: "./images/perfect.jpeg", url: "./summary/perfect-fire-red-summary.html" },
-    { title: "Pokémon Moon Emerald", type: "hack", console: "gba", image: "./images/moon-emerald.jpg", url: "./summary/moon-emerald-summary.html" },
-    { title: "Pokémon Heart and Soul", type: "hack", console: "gba", image: "./images/heart.jpeg", url: "./summary/heart-and-soul-summary.html" },
-    { title: "Pokémon Gaia", type: "hack", console: "gba", image: "./images/gaia.jpg", url: "./summary/gaia-summary.html" },
-    { title: "Pokémon Fire Gold", type: "hack", console: "gba", image: "./images/fire-gold.jpeg", url: "./summary/fire-gold-summary.html" },
-    { title: "Pokémon Seaglass", type: "hack", console: "gba", image: "./images/sea.jpeg", url: "./summary/sea-glass-summary.html" },
-    { title: "Pokémon Horizons", type: "hack", console: "gba", image: "./images/horizons.jpg", url: "./summary/horizons-summary.html" },
-    { title: "Pokémon Emerald Enhanced", type: "hack", console: "gba", image: "./images/enhanced.jpeg", url: "./summary/emerald-enhanced-summary.html" },
-    /* ✅ FIXED: removed trailing spaces + added missing comma */
-    { title: "Pokémon Emerald Crest", type: "hack", console: "gba", image: "./images/crest.jpg", url: "./summary/crest-summary.html" },
-    { title: "Pokémon Elite Redux", type: "hack", console: "gba", image: "./images/elite.jpg", url: "./summary/elte-summary.html" },
-    { title: "Pokémon Dreamstone Mysteries", type: "hack", console: "gba", image: "./images/dreamstone.jpg", url: "./summary/dream-stone-summary.html" },
-    { title: "Pokémon Crystal Redux Advanced", type: "hack", console: "gba", image: "./images/crystal-redux.jpeg", url: "./summary/advanced-redux-summary.html" },
+    {
+      title: "Pokémon Red",
+      type: "official",
+      console: "gb",
+      image: "./images/red.jpeg",
+      url: "./summary/red-summary.html"
+    },
+    {
+      title: "Pokémon Blue",
+      type: "official",
+      console: "gb",
+      image: "./images/blue.jpeg",
+      url: "./summary/blue-summary.html"
+    },
+    {
+      title: "Pokémon Yellow",
+      type: "official",
+      console: "gb",
+      image: "./images/yellow.jpeg",
+      url: "./summary/yellow-summary.html"
+    },
+    {
+      title: "Pokémon Silver",
+      type: "official",
+      console: "gbc",
+      image: "./images/silver.jpg",
+      url: "./summary/silver-summary.html"
+    },
+    {
+      title: "Pokémon Gold",
+      type: "official",
+      console: "gbc",
+      image: "./images/gold.jpeg",
+      url: "./summary/gold-summary.html"
+    },
+    {
+      title: "Pokémon Crystal",
+      type: "official",
+      console: "gbc",
+      image: "./images/crystal.jpeg",
+      url: "./summary/crystal-summary.html"
+    },
+    {
+      title: "Pokémon Fire Red",
+      type: "official",
+      console: "gba",
+      image: "./images/Fire.jpg",
+      url: "./summary/fire-summary.html"
+    },
+    {
+      title: "Pokémon Leaf Green",
+      type: "official",
+      console: "gba",
+      image: "./images/leaf.jpeg",
+      url: "./summary/leaf-summary.html"
+    },
+    {
+      title: "Pokémon Ruby",
+      type: "official",
+      console: "gba",
+      image: "./images/Ruby.png",
+      url: "./summary/ruby-summary.html"
+    },
+    {
+      title: "Pokémon Sapphire",
+      type: "official",
+      console: "gba",
+      image: "./images/sapphire.jpeg",
+      url: "./summary/sapphire-summary.html"
+    },
+    {
+      title: "Pokémon Emerald",
+      type: "official",
+      console: "gba",
+      image: "./images/Emerald.jpeg",
+      url: "./summary/emerald-summary.html"
+    },
+    {
+      title: "Pokémon Unbound",
+      type: "hack",
+      console: "gba",
+      image: "./images/Unbound.jpg",
+      url: "./summary/unbound-summary.html"
+    },
+    {
+      title: "Pokémon Emerald Imparuim",
+      type: "hack",
+      console: "gba",
+      image: "./images/Imparuim.jpeg",
+      url: "./summary/imparuim-summary.html"
+    },
+    {
+      title: "Pokémon Radical Red",
+      type: "hack",
+      console: "gba",
+      image: "./images/radical.jpeg",
+      url: "./summary/Radical-red-summary.html"
+    },
+    {
+      title: "Pokémon Rocket Edition",
+      type: "hack",
+      console: "gba",
+      image: "./images/Rocket.jpeg",
+      url: "./summary/rocket-summary.html"
+    },
   ];
-
-  /* ------------------------ DOM ELEMENTS -------------------------- */
 
   const grid = document.getElementById('games-grid');
   const filterBtns = document.querySelectorAll('.filter-btn');
-  const searchInput = document.getElementById('search-input');
-  const gameCountEl = document.getElementById('game-count');
 
-  let currentFilter = 'all';
-  let searchQuery = '';
+  function renderGames(filterType = 'all') {
+    grid.innerHTML = '<div class="loading">Loading games...</div>';
+    
+    setTimeout(() => {
+      const filtered = filterType === 'all'
+        ? games
+        : games.filter(g => g.type === filterType || g.console === filterType);
 
-  /* ------------------------ RENDER GAMES -------------------------- */
-
-  function renderGames() {
-    grid.innerHTML = '';
-
-    let filtered = games;
-
-    if (currentFilter !== 'all') {
-      filtered = filtered.filter(g => g.type === currentFilter || g.console === currentFilter);
-    }
-
-    if (searchQuery) {
-      filtered = filtered.filter(g =>
-        g.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    if (gameCountEl) gameCountEl.textContent = filtered.length;
-
-    if (filtered.length === 0) {
-      grid.innerHTML = `
-        <div class="empty-state">
-          <h3>No Games Found</h3>
-          <p>Try adjusting your search or filter.</p>
-        </div>
-      `;
-      return;
-    }
-
-    filtered.forEach((game, index) => {
-      const card = document.createElement('div');
-      card.className = 'game-card';
-      card.style.animationDelay = `${index * 0.05}s`;
-
-      card.innerHTML = `
-        <div class="card-image">
-          <img src="${game.image}" alt="${game.title}" loading="lazy">
-        </div>
-        <div class="card-content">
-          <h4>${game.title}</h4>
-          <div class="tags">
-            <span class="tag ${game.type}">${game.type}</span>
-            <span class="tag ${game.console}">${game.console.toUpperCase()}</span>
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <h3>No Games Found</h3>
+            <p>Try selecting a different filter!</p>
           </div>
-          <a href="${game.url}" style="text-decoration: none;">
-            <button class="play-btn">Play Now</button>
-          </a>
-        </div>
-      `;
+        `;
+        return;
+      }
 
-      grid.appendChild(card);
-    });
+      grid.innerHTML = '';
+      filtered.forEach((game, index) => {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        card.style.animationDelay = `${index * 0.05}s`;
+        
+        card.innerHTML = `
+          <div class="card-image">
+            <img src="${game.image}" alt="${game.title}" loading="lazy">
+            <h3>${game.title}</h3>
+          </div>
+          <div class="card-content">
+            <h4>${game.title}</h4>
+            <div class="tags">
+              <span class="tag ${game.type}">${game.type}</span>
+              <span class="tag ${game.console}">${game.console.toUpperCase()}</span>
+            </div>
+            <a href="${game.url}" style="text-decoration: none;">
+              <button class="play-btn">PLAY NOW</button>
+            </a>
+          </div>
+        `;
+        
+        grid.appendChild(card);
+      });
+    }, 150);
   }
-
-  /* ------------------------ EVENT LISTENERS ----------------------- */
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelector('.filter-btn.active')?.classList.remove('active');
       btn.classList.add('active');
-      currentFilter = btn.dataset.filter;
-      renderGames();
+      renderGames(btn.dataset.filter);
     });
   });
-
-  let searchTimeout;
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => {
-        searchQuery = e.target.value.trim();
-        renderGames();
-      }, 200);
-    });
-  }
 
   renderGames();
 </script>
