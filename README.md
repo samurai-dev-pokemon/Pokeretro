@@ -4,17 +4,17 @@ this website includes basically every single pokemon rom hack and mainline game 
 Heres its features lol
 
 # Features
-All mainline pokemon games till the gba (nds MAY come soon)
-lots of differernt rom hacks (Yess i am accepting reccomendations so I can add your fav game)
-SRM files (save files) can be downloaded 
-Uses Emulator JS (the goat)
-pretty visually apealling if i say so myself (took so long....)
-and MORE!
+All mainline pokemon games till the gba (nds MAY come soon)<br>
+lots of differernt rom hacks (Yess i am accepting reccomendations so I can add your fav game)<br>
+SRM files (save files) can be downloaded <br>
+Uses Emulator JS (the goat)<br>
+pretty visually apealling if i say so myself (took so long....)<br>
+and MORE!<br>
 
 # Updates
-still on 1.0.....
+still on 1.0.....<br>
 
 # Special Thanks to...
-Me (samurai.dev)
-Ultimate Game stash
+Me (samurai.dev)<br>
+Ultimate Game stash (for the game)<br>
 yeah thats about it
