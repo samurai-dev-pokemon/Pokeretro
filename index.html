@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Play classic Pokémon games, ROM hacks, and DS adventures directly in your browser.">
 <title>PokéRetro | Play Classic & ROM Hack Games</title>
 <link rel="icon" type="image/x-icon" href="./Master-Ball.ico">
 
@@ -21,7 +22,7 @@
   --primary-red: #ff3b30;
   --primary-yellow: #ffcc00;
   --text-main: #ffffff;
-  --text-muted: #a8b0b8;
+  --text-muted: #c0c7d0;
   --text-soft: #d6dbe0;
   --tag-official: #2a82da;
   --tag-hack: #8e44ad;
@@ -39,7 +40,6 @@
   box-sizing: border-box;
 }
 
-/* Prevent white flicker during scroll */
 html {
   background-color: var(--bg-color);
   scroll-behavior: smooth;
@@ -59,7 +59,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Background grid overlay */
 body::before {
   content: "";
   position: fixed;
@@ -71,6 +70,30 @@ body::before {
   pointer-events: none;
   z-index: -1;
   opacity: 0.35;
+}
+
+/* --- ACCESSIBILITY --- */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--primary-red);
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  z-index: 1000;
+  border-radius: 0 0 4px 0;
+  font-weight: 700;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--primary-yellow);
+  outline-offset: 2px;
 }
 
 /* --- HEADER --- */
@@ -350,8 +373,6 @@ h1, h2 {
   transform: translateY(-2px) scale(1.02);
 }
 
-/* REMOVED STATS CARDS HERE */
-
 /* --- FILTERS --- */
 .filters {
   display: flex;
@@ -548,6 +569,18 @@ h1, h2 {
   font-size: 0.9rem;
 }
 
+.loading::after {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-left: 0.5em;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: var(--primary-red);
+  animation: spinner 0.8s linear infinite;
+}
+
 .empty-state {
   grid-column: 1 / -1;
   text-align: center;
@@ -560,6 +593,20 @@ h1, h2 {
   font-size: 1.1rem;
   margin-bottom: 1rem;
   color: var(--text-main);
+}
+
+.error-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+}
+
+.error-state h3 {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: var(--primary-red);
 }
 
 /* FULL LIBRARY CTA */
@@ -644,6 +691,32 @@ footer {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes spinner {
+  to { transform: rotate(360deg); }
+}
+
+/* ACCESSIBILITY - REDUCED MOTION */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* HIGH CONTRAST MODE */
+@media (prefers-contrast: high) {
+  :root {
+    --card-border: rgba(255, 255, 255, 0.3);
+  }
+  
+  .filter-btn {
+    border-width: 2px;
+  }
+}
+
 /* RESPONSIVE */
 @media (max-width: 900px) {
   .hero h1 { font-size: 2rem; }
@@ -708,425 +781,638 @@ footer {
 </head>
 <body>
 
-<header>
-  <div class="logo">
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<header role="banner">
+  <div class="logo" aria-label="PokéRetro Home">
     <span>Poké</span>Retro
   </div>
 
-  <button class="mobile-menu-btn" id="mobile-menu-toggle">☰</button>
+  <button 
+    class="mobile-menu-btn" 
+    id="mobile-menu-toggle"
+    aria-label="Toggle navigation menu"
+    aria-expanded="false"
+    aria-controls="main-nav">
+    <span aria-hidden="true">☰</span>
+  </button>
 
-  <nav class="main-nav" id="main-nav">
-    <a href="index.html" class="nav-link nav-link-active">Home</a>
+  <nav class="main-nav" id="main-nav" role="navigation" aria-label="Main navigation">
+    <a href="index.html" class="nav-link nav-link-active" aria-current="page">Home</a>
     <a href="library.html" class="nav-link">Library</a>
-    <a href="https://forms.gle/7DkJQVvCr8dKMcuy6" class="nav-link">Recommendations</a>
+    <a href="https://forms.gle/7DkJQVvCr8dKMcuy6" class="nav-link" target="_blank" rel="noopener">Recommendations</a>
   </nav>
 
   <div class="header-actions">
-    <div id="auth-logged-out" class="auth-logged-out">
+    <div id="auth-logged-out" class="auth-logged-out" role="group" aria-label="Authentication">
       <a href="login.html" class="btn-pill ghost">Log in</a>
       <a href="signup.html" class="btn-pill primary">Sign up</a>
     </div>
 
-    <div id="auth-logged-in" class="user-area hidden">
-      <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
+    <div id="auth-logged-in" class="user-area hidden" role="group" aria-label="User menu">
+      <img id="user-avatar" class="user-avatar" src="" alt="">
       <div class="user-info">
         <span id="user-name" class="user-name"></span>
         <div style="display: flex; gap: 0.5rem; align-items: center;">
           <a href="profile.html">Profile</a>
-          <span style="color: rgba(255,255,255,0.2);">•</span>
-          <button id="logout-btn" class="logout-btn">Log out</button>
+          <span style="color: rgba(255,255,255,0.2);" aria-hidden="true">•</span>
+          <button id="logout-btn" class="logout-btn" aria-label="Log out">Log out</button>
         </div>
       </div>
     </div>
   </div>
 </header>
 
-<section class="hero">
-  <div class="hero-badge">Play classics, hacks, and DS adventures</div>
-  <h1>Gotta Play <span class="accent">'Em All.</span></h1>
-  <p>
-    Relive the golden generations of Pokémon with classic releases, fan-favorite ROM hacks,
-    and Nintendo DS era adventures. Play directly from your browser and discover your next journey.
-  </p>
+<main id="main-content">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-badge" role="status">Play classics, hacks, and DS adventures</div>
+    <h1 id="hero-title">Gotta Play <span class="accent">'Em All.</span></h1>
+    <p>
+      Relive the golden generations of Pokémon with classic releases, fan-favorite ROM hacks,
+      and Nintendo DS era adventures. Play directly from your browser and discover your next journey.
+    </p>
 
-  <div class="hero-actions">
-    <a href="#games-grid" class="hero-btn primary">Browse Games</a>
-    <a href="library.html" class="hero-btn secondary">Open Full Library</a>
-  </div>
+    <div class="hero-actions">
+      <a href="#games-grid" class="hero-btn primary">Browse Games</a>
+      <a href="library.html" class="hero-btn secondary">Open Full Library</a>
+    </div>
+  </section>
 
-  <!-- REMOVED STATS SECTION HERE -->
-  
-</section>
+  <section class="filters" id="filter-container" role="group" aria-label="Game filters">
+    <button class="filter-btn active" data-filter="all" aria-pressed="true">All Games</button>
+    <button class="filter-btn" data-filter="official" aria-pressed="false">Official Releases</button>
+    <button class="filter-btn" data-filter="hack" aria-pressed="false">ROM Hacks</button>
+    <button class="filter-btn" data-filter="gb" aria-pressed="false">Game Boy</button>
+    <button class="filter-btn" data-filter="gbc" aria-pressed="false">Game Boy Color</button>
+    <button class="filter-btn" data-filter="gba" aria-pressed="false">Game Boy Advance</button>
+    <button class="filter-btn" data-filter="ds" aria-pressed="false">Nintendo DS</button>
+  </section>
 
-<section class="filters" id="filter-container">
-  <button class="filter-btn active" data-filter="all">All Games</button>
-  <button class="filter-btn" data-filter="official">Official Releases</button>
-  <button class="filter-btn" data-filter="hack">ROM Hacks</button>
-  <button class="filter-btn" data-filter="gb">Game Boy</button>
-  <button class="filter-btn" data-filter="gbc">Game Boy Color</button>
-  <button class="filter-btn" data-filter="gba">Game Boy Advance</button>
-  <button class="filter-btn" data-filter="ds">Nintendo DS</button>
-</section>
+  <h2 class="games-section-title">Featured Library</h2>
+  <section 
+    class="games-grid" 
+    id="games-grid" 
+    role="region" 
+    aria-live="polite" 
+    aria-label="Game collection">
+  </section>
 
-<div class="games-section-title">Featured Library</div>
-<section class="games-grid" id="games-grid"></section>
+  <section class="more-games-container">
+    <a href="library.html" class="library-btn">
+      <span>Full Library</span>
+      <div class="btn-glow" aria-hidden="true"></div>
+    </a>
+  </section>
+</main>
 
-<section class="more-games-container">
-  <a href="library.html" class="library-btn">
-    <span>Full Library</span>
-    <div class="btn-glow"></div>
-  </a>
-</section>
-
-<footer>
+<footer role="contentinfo">
   <p>Made by Samurai.Dev. This is a fan-made project.</p>
 </footer>
 
 <script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-  const SUPABASE_URL = 'https://glppkibaawrquvytvnrg.supabase.co';
-
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdscHBraWJhYXdycXV2eXR2bnJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MjEzOTIsImV4cCI6MjA4NzQ5NzM5Mn0.1q6Fby1XiFUS83n-1JpIfBjLB49ucTSSbu2hfB_dU8k';
-
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  const authLoggedOut = document.getElementById('auth-logged-out');
-  const authLoggedIn  = document.getElementById('auth-logged-in');
-  const userAvatarEl  = document.getElementById('user-avatar');
-  const userNameEl    = document.getElementById('user-name');
-  const logoutBtn     = document.getElementById('logout-btn');
-  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-  const mainNav = document.getElementById('main-nav');
-
-  /* MOBILE MENU */
-  if (mobileMenuToggle) {
-    mobileMenuToggle.addEventListener('click', () => {
-      mainNav.classList.toggle('open');
-    });
-
-    mainNav.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', () => {
-        mainNav.classList.remove('open');
-      });
-    });
+// ============================================================================
+// CONFIGURATION
+// ============================================================================
+const CONFIG = {
+  supabase: {
+    url: 'https://glppkibaawrquvytvnrg.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdscHBraWJhYXdycXV2eXR2bnJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MjEzOTIsImV4cCI6MjA4NzQ5NzM5Mn0.1q6Fby1XiFUS83n-1JpIfBjLB49ucTSSbu2hfB_dU8k'
+  },
+  ui: {
+    animationDelay: 40,
+    loadingTimeout: 150
+  },
+  api: {
+    retries: 3,
+    timeout: 10000
   }
+};
 
-  function setUser(user) {
-    if (user) {
-      authLoggedOut.classList.add('hidden');
-      authLoggedIn.classList.remove('hidden');
+// ============================================================================
+// FALLBACK GAMES DATA
+// ============================================================================
+const FALLBACK_GAMES = [
+  {
+    title: "Pokémon Red",
+    type: "official",
+    console: "gb",
+    image: "./images/red.jpeg",
+    url: "./summary/red-summary.html",
+    description: "The original Kanto adventure that started it all."
+  },
+  {
+    title: "Pokémon Blue",
+    type: "official",
+    console: "gb",
+    image: "./images/blue.jpeg",
+    url: "./summary/blue-summary.html",
+    description: "Classic monster-catching gameplay in the original Blue version."
+  },
+  {
+    title: "Pokémon Yellow",
+    type: "official",
+    console: "gb",
+    image: "./images/yellow.jpeg",
+    url: "./summary/yellow-summary.html",
+    description: "Travel with Pikachu and relive the anime-inspired Kanto journey."
+  },
+  {
+    title: "Pokémon Silver",
+    type: "official",
+    console: "gbc",
+    image: "./images/silver.jpg",
+    url: "./summary/silver-summary.html",
+    description: "Explore Johto and challenge a whole new generation of Pokémon."
+  },
+  {
+    title: "Pokémon Gold",
+    type: "official",
+    console: "gbc",
+    image: "./images/gold.jpeg",
+    url: "./summary/gold-summary.html",
+    description: "A beloved Johto classic with time-based gameplay and new legends."
+  },
+  {
+    title: "Pokémon Crystal",
+    type: "official",
+    console: "gbc",
+    image: "./images/crystal.jpeg",
+    url: "./summary/crystal-summary.html",
+    description: "The enhanced Johto experience with animated sprites and extra story."
+  },
+  {
+    title: "Pokémon Fire Red",
+    type: "official",
+    console: "gba",
+    image: "./images/fire.jpg",
+    url: "./summary/fire-summary.html",
+    description: "A polished GBA remake of the original Red adventure."
+  },
+  {
+    title: "Pokémon Leaf Green",
+    type: "official",
+    console: "gba",
+    image: "./images/leaf.jpeg",
+    url: "./summary/leaf-summary.html",
+    description: "Return to Kanto in this enhanced remake of the original Green version."
+  },
+  {
+    title: "Pokémon Ruby",
+    type: "official",
+    console: "gba",
+    image: "./images/ruby.png",
+    url: "./summary/ruby-summary.html",
+    description: "Hoenn awaits with new Pokémon, secrets, and legendary battles."
+  },
+  {
+    title: "Pokémon Sapphire",
+    type: "official",
+    console: "gba",
+    image: "./images/sapphire.jpeg",
+    url: "./summary/sapphire-summary.html",
+    description: "Dive into Hoenn and stop Team Aqua in this GBA classic."
+  },
+  {
+    title: "Pokémon Emerald",
+    type: "official",
+    console: "gba",
+    image: "./images/emerald.jpeg",
+    url: "./summary/emerald-summary.html",
+    description: "The definitive Hoenn adventure with Battle Frontier content."
+  },
+  {
+    title: "Pokémon Diamond",
+    type: "official",
+    console: "ds",
+    image: "./images/diamond.jpg",
+    url: "./summary/diamond-summary.html",
+    description: "Begin your Sinnoh journey and uncover the mystery of Dialga."
+  },
+  {
+    title: "Pokémon Pearl",
+    type: "official",
+    console: "ds",
+    image: "./images/pearl.jpg",
+    url: "./summary/pearl-summary.html",
+    description: "Explore the Sinnoh region and face the legendary Palkia."
+  },
+  {
+    title: "Pokémon Platinum",
+    type: "official",
+    console: "ds",
+    image: "./images/platinum.jpg",
+    url: "./summary/platinum-summary.html",
+    description: "A fan-favorite enhanced Sinnoh experience with the Distortion World."
+  },
+  {
+    title: "Pokémon HeartGold",
+    type: "official",
+    console: "ds",
+    image: "./images/heartgold.jpg",
+    url: "./summary/heartgold-summary.html",
+    description: "A modernized remake of Gold with DS visuals and extra features."
+  },
+  {
+    title: "Pokémon SoulSilver",
+    type: "official",
+    console: "ds",
+    image: "./images/soulsilver.jpg",
+    url: "./summary/soulsilver-summary.html",
+    description: "Revisit Johto in one of the most beloved Pokémon remakes ever."
+  },
+  {
+    title: "Pokémon Black",
+    type: "official",
+    console: "ds",
+    image: "./images/black.jpg",
+    url: "./summary/black-summary.html",
+    description: "Enter Unova and experience a more story-driven Pokémon journey."
+  },
+  {
+    title: "Pokémon White",
+    type: "official",
+    console: "ds",
+    image: "./images/white.jpg",
+    url: "./summary/white-summary.html",
+    description: "Catch brand-new Pokémon and explore the Unova region."
+  },
+  {
+    title: "Pokémon Black 2",
+    type: "official",
+    console: "ds",
+    image: "./images/black2.jpg",
+    url: "./summary/black2-summary.html",
+    description: "A rare direct sequel with expanded content and new Unova areas."
+  },
+  {
+    title: "Pokémon White 2",
+    type: "official",
+    console: "ds",
+    image: "./images/white2.jpg",
+    url: "./summary/white2-summary.html",
+    description: "Continue the Unova story in one of the best DS Pokémon titles."
+  },
+  {
+    title: "Pokémon Unbound",
+    type: "hack",
+    console: "gba",
+    image: "./images/unbound.jpg",
+    url: "./summary/unbound-summary.html",
+    description: "A premium ROM hack with a fresh region, story, and deep features."
+  },
+  {
+    title: "Pokémon Emerald Imperium",
+    type: "hack",
+    console: "gba",
+    image: "./images/imparuim.jpeg",
+    url: "./summary/imparuim-summary.html",
+    description: "A difficulty-focused Emerald hack for players wanting a serious challenge."
+  },
+  {
+    title: "Pokémon Radical Red",
+    type: "hack",
+    console: "gba",
+    image: "./images/radical.jpeg",
+    url: "./summary/Radical-red-summary.html",
+    description: "A highly challenging FireRed hack with modern mechanics and huge variety."
+  },
+  {
+    title: "Pokémon Rocket Edition",
+    type: "hack",
+    console: "gba",
+    image: "./images/rocket.jpeg",
+    url: "./summary/rocket-summary.html",
+    description: "Play through Kanto from Team Rocket's perspective in this unique hack."
+  }
+];
 
-      const meta = user.user_metadata || {};
-      const avatarObj = meta.avatar || null;
+// ============================================================================
+// SUPABASE CLIENT
+// ============================================================================
+const supabase = createClient(CONFIG.supabase.url, CONFIG.supabase.anonKey);
 
-      const name =
-        meta.trainer_name ||
-        meta.username ||
-        meta.full_name ||
-        'Trainer';
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+const utils = {
+  show(element) {
+    element?.classList.remove('hidden');
+  },
 
-      const avatarUrl =
-        (avatarObj && avatarObj.image) ||
-        meta.avatar_url ||
-        `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${encodeURIComponent(user.id)}`;
+  hide(element) {
+    element?.classList.add('hidden');
+  },
 
-      userNameEl.textContent = name;
-      userAvatarEl.src = avatarUrl;
-      userAvatarEl.alt = `${name}'s avatar`;
-    } else {
-      authLoggedOut.classList.remove('hidden');
-      authLoggedIn.classList.add('hidden');
-      userAvatarEl.src = '';
-      userNameEl.textContent = '';
+  async retry(fn, retries = CONFIG.api.retries) {
+    for (let i = 0; i < retries; i++) {
+      try {
+        return await fn();
+      } catch (error) {
+        if (i === retries - 1) throw error;
+        await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+      }
     }
-  }
+  },
 
-  async function refreshUser() {
+  defaultAvatar(id) {
+    return `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${encodeURIComponent(id)}`;
+  }
+};
+
+// ============================================================================
+// AUTH SERVICE
+// ============================================================================
+const authService = {
+  async getCurrentUser() {
     try {
       const { data, error } = await supabase.auth.getUser();
       if (error) throw error;
-      setUser(data.user);
+      return data.user;
     } catch (error) {
-      console.error('Error fetching user:', error.message);
-      setUser(null);
+      console.error('Failed to fetch user:', error);
+      return null;
     }
-  }
+  },
 
-  supabase.auth.onAuthStateChange((_event, session) => {
-    setUser(session?.user ?? null);
-  });
+  async signOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  },
 
-  logoutBtn?.addEventListener('click', async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      setUser(null);
-    } catch (error) {
-      console.error('Error logging out:', error.message);
-      alert('Error logging out. Please try again.');
-    }
-  });
-
-  refreshUser();
-  setTimeout(refreshUser, 500);
-
-  const games = [
-    {
-      title: "Pokémon Red",
-      type: "official",
-      console: "gb",
-      image: "./images/red.jpeg",
-      url: "./summary/red-summary.html",
-      description: "The original Kanto adventure that started it all."
-    },
-    {
-      title: "Pokémon Blue",
-      type: "official",
-      console: "gb",
-      image: "./images/blue.jpeg",
-      url: "./summary/blue-summary.html",
-      description: "Classic monster-catching gameplay in the original Blue version."
-    },
-    {
-      title: "Pokémon Yellow",
-      type: "official",
-      console: "gb",
-      image: "./images/yellow.jpeg",
-      url: "./summary/yellow-summary.html",
-      description: "Travel with Pikachu and relive the anime-inspired Kanto journey."
-    },
-    {
-      title: "Pokémon Silver",
-      type: "official",
-      console: "gbc",
-      image: "./images/silver.jpg",
-      url: "./summary/silver-summary.html",
-      description: "Explore Johto and challenge a whole new generation of Pokémon."
-    },
-    {
-      title: "Pokémon Gold",
-      type: "official",
-      console: "gbc",
-      image: "./images/gold.jpeg",
-      url: "./summary/gold-summary.html",
-      description: "A beloved Johto classic with time-based gameplay and new legends."
-    },
-    {
-      title: "Pokémon Crystal",
-      type: "official",
-      console: "gbc",
-      image: "./images/crystal.jpeg",
-      url: "./summary/crystal-summary.html",
-      description: "The enhanced Johto experience with animated sprites and extra story."
-    },
-    {
-      title: "Pokémon Fire Red",
-      type: "official",
-      console: "gba",
-      image: "./images/fire.jpg",
-      url: "./summary/fire-summary.html",
-      description: "A polished GBA remake of the original Red adventure."
-    },
-    {
-      title: "Pokémon Leaf Green",
-      type: "official",
-      console: "gba",
-      image: "./images/leaf.jpeg",
-      url: "./summary/leaf-summary.html",
-      description: "Return to Kanto in this enhanced remake of the original Green version."
-    },
-    {
-      title: "Pokémon Ruby",
-      type: "official",
-      console: "gba",
-      image: "./images/ruby.png",
-      url: "./summary/ruby-summary.html",
-      description: "Hoenn awaits with new Pokémon, secrets, and legendary battles."
-    },
-    {
-      title: "Pokémon Sapphire",
-      type: "official",
-      console: "gba",
-      image: "./images/sapphire.jpeg",
-      url: "./summary/sapphire-summary.html",
-      description: "Dive into Hoenn and stop Team Aqua in this GBA classic."
-    },
-    {
-      title: "Pokémon Emerald",
-      type: "official",
-      console: "gba",
-      image: "./images/emerald.jpeg",
-      url: "./summary/emerald-summary.html",
-      description: "The definitive Hoenn adventure with Battle Frontier content."
-    },
-    {
-      title: "Pokémon Diamond",
-      type: "official",
-      console: "ds",
-      image: "./images/diamond.jpg",
-      url: "./summary/diamond-summary.html",
-      description: "Begin your Sinnoh journey and uncover the mystery of Dialga."
-    },
-    {
-      title: "Pokémon Pearl",
-      type: "official",
-      console: "ds",
-      image: "./images/pearl.jpg",
-      url: "./summary/pearl-summary.html",
-      description: "Explore the Sinnoh region and face the legendary Palkia."
-    },
-    {
-      title: "Pokémon Platinum",
-      type: "official",
-      console: "ds",
-      image: "./images/platinum.jpg",
-      url: "./summary/platinum-summary.html",
-      description: "A fan-favorite enhanced Sinnoh experience with the Distortion World."
-    },
-    {
-      title: "Pokémon HeartGold",
-      type: "official",
-      console: "ds",
-      image: "./images/heartgold.jpg",
-      url: "./summary/heartgold-summary.html",
-      description: "A modernized remake of Gold with DS visuals and extra features."
-    },
-    {
-      title: "Pokémon SoulSilver",
-      type: "official",
-      console: "ds",
-      image: "./images/soulsilver.jpg",
-      url: "./summary/soulsilver-summary.html",
-      description: "Revisit Johto in one of the most beloved Pokémon remakes ever."
-    },
-    {
-      title: "Pokémon Black",
-      type: "official",
-      console: "ds",
-      image: "./images/black.jpg",
-      url: "./summary/black-summary.html",
-      description: "Enter Unova and experience a more story-driven Pokémon journey."
-    },
-    {
-      title: "Pokémon White",
-      type: "official",
-      console: "ds",
-      image: "./images/white.jpg",
-      url: "./summary/white-summary.html",
-      description: "Catch brand-new Pokémon and explore the Unova region."
-    },
-    {
-      title: "Pokémon Black 2",
-      type: "official",
-      console: "ds",
-      image: "./images/black2.jpg",
-      url: "./summary/black2-summary.html",
-      description: "A rare direct sequel with expanded content and new Unova areas."
-    },
-    {
-      title: "Pokémon White 2",
-      type: "official",
-      console: "ds",
-      image: "./images/white2.jpg",
-      url: "./summary/white2-summary.html",
-      description: "Continue the Unova story in one of the best DS Pokémon titles."
-    },
-    {
-      title: "Pokémon Unbound",
-      type: "hack",
-      console: "gba",
-      image: "./images/unbound.jpg",
-      url: "./summary/unbound-summary.html",
-      description: "A premium ROM hack with a fresh region, story, and deep features."
-    },
-    {
-      title: "Pokémon Emerald Imperium",
-      type: "hack",
-      console: "gba",
-      image: "./images/imparuim.jpeg",
-      url: "./summary/imparuim-summary.html",
-      description: "A difficulty-focused Emerald hack for players wanting a serious challenge."
-    },
-    {
-      title: "Pokémon Radical Red",
-      type: "hack",
-      console: "gba",
-      image: "./images/radical.jpeg",
-      url: "./summary/Radical-red-summary.html",
-      description: "A highly challenging FireRed hack with modern mechanics and huge variety."
-    },
-    {
-      title: "Pokémon Rocket Edition",
-      type: "hack",
-      console: "gba",
-      image: "./images/rocket.jpeg",
-      url: "./summary/rocket-summary.html",
-      description: "Play through Kanto from Team Rocket's perspective in this unique hack."
-    }
-  ];
-
-  const grid = document.getElementById('games-grid');
-  const filterBtns = document.querySelectorAll('.filter-btn');
-
-  // REMOVED: statTotal variable declaration
-
-  function renderGames(filterType = 'all') {
-    grid.innerHTML = '<div class="loading">Loading games...</div>';
-
-    setTimeout(() => {
-      const filtered = filterType === 'all'
-        ? games
-        : games.filter(g => g.type === filterType || g.console === filterType);
-
-      if (filtered.length === 0) {
-        grid.innerHTML = `
-          <div class="empty-state">
-            <h3>No Games Found</h3>
-            <p>Try selecting a different filter.</p>
-          </div>
-        `;
-        return;
-      }
-
-      grid.innerHTML = '';
-      filtered.forEach((game, index) => {
-        const card = document.createElement('div');
-        card.className = 'game-card';
-        card.style.animationDelay = `${index * 0.04}s`;
-
-        card.innerHTML = `
-          <div class="card-image">
-            <img src="${game.image}" alt="${game.title}" loading="lazy">
-            <h3>${game.title}</h3>
-          </div>
-          <div class="card-content">
-            <h4>${game.title}</h4>
-            <p class="card-description">${game.description || 'A Pokémon adventure awaits.'}</p>
-            <div class="tags">
-              <span class="tag ${game.type}">${game.type}</span>
-              <span class="tag ${game.console}">${game.console.toUpperCase()}</span>
-            </div>
-            <a href="${game.url}" class="play-link">
-              <button class="play-btn">PLAY NOW</button>
-            </a>
-          </div>
-        `;
-
-        grid.appendChild(card);
-      });
-    }, 150);
-  }
-
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelector('.filter-btn.active')?.classList.remove('active');
-      btn.classList.add('active');
-      renderGames(btn.dataset.filter);
+  onAuthChange(callback) {
+    return supabase.auth.onAuthStateChange((_event, session) => {
+      callback(session?.user ?? null);
     });
-  });
+  },
 
-  renderGames();
+  formatUserData(user) {
+    if (!user) return null;
+
+    const meta = user.user_metadata || {};
+    const avatarObj = meta.avatar || null;
+
+    return {
+      name: meta.trainer_name || meta.username || meta.full_name || 'Trainer',
+      avatar: (avatarObj && avatarObj.image) || 
+              meta.avatar_url || 
+              utils.defaultAvatar(user.id)
+    };
+  }
+};
+
+// ============================================================================
+// GAMES SERVICE
+// ============================================================================
+const gamesService = {
+  async fetchGames() {
+    try {
+      const { data, error } = await utils.retry(() => 
+        supabase
+          .from('games')
+          .select('*')
+          .order('title', { ascending: true })
+      );
+
+      if (error) throw error;
+      
+      return data && data.length > 0 ? data : FALLBACK_GAMES;
+      
+    } catch (error) {
+      console.warn('Failed to fetch games from database, using fallback data:', error);
+      return FALLBACK_GAMES;
+    }
+  },
+
+  filterGames(games, filterType) {
+    if (filterType === 'all') return games;
+    return games.filter(g => g.type === filterType || g.console === filterType);
+  }
+};
+
+// ============================================================================
+// DOM HELPERS
+// ============================================================================
+const dom = {
+  createGameCard(game, index) {
+    const card = document.createElement('article');
+    card.className = 'game-card';
+    card.style.animationDelay = `${index * CONFIG.ui.animationDelay}ms`;
+    card.setAttribute('role', 'article');
+    card.setAttribute('aria-label', `${game.title} game card`);
+
+    const typeLabel = game.type === 'official' ? 'Official' : 'ROM Hack';
+    const consoleLabel = game.console.toUpperCase();
+
+    card.innerHTML = `
+      <div class="card-image">
+        <img 
+          src="${game.image}" 
+          alt="${game.title} cover art" 
+          loading="lazy"
+          width="290"
+          height="190">
+        <h3>${game.title}</h3>
+      </div>
+      <div class="card-content">
+        <h4>${game.title}</h4>
+        <p class="card-description">${game.description || 'A Pokémon adventure awaits.'}</p>
+        <div class="tags" role="group" aria-label="Game categories">
+          <span class="tag ${game.type}" role="status">${typeLabel}</span>
+          <span class="tag ${game.console}" role="status">${consoleLabel}</span>
+        </div>
+        <a href="${game.url}" class="play-link" aria-label="Play ${game.title}">
+          <button class="play-btn">PLAY NOW</button>
+        </a>
+      </div>
+    `;
+
+    return card;
+  },
+
+  showLoading(container) {
+    container.innerHTML = `
+      <div class="loading" role="status" aria-live="polite">
+        <span>Loading games</span>
+      </div>
+    `;
+  },
+
+  showError(container, message = 'Failed to load games') {
+    container.innerHTML = `
+      <div class="error-state" role="alert">
+        <h3>⚠️ Error</h3>
+        <p>${message}</p>
+        <button onclick="location.reload()" class="hero-btn primary" style="margin-top: 1.5rem;">
+          Retry
+        </button>
+      </div>
+    `;
+  },
+
+  showEmpty(container) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <h3>No Games Found</h3>
+        <p>Try selecting a different filter.</p>
+      </div>
+    `;
+  },
+
+  updateFilterButtons(buttons, activeFilter) {
+    buttons.forEach(btn => {
+      const isActive = btn.dataset.filter === activeFilter;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-pressed', isActive);
+    });
+  }
+};
+
+// ============================================================================
+// MAIN APPLICATION
+// ============================================================================
+class App {
+  constructor() {
+    this.games = [];
+    this.currentFilter = 'all';
+    this.init();
+  }
+
+  async init() {
+    this.cacheElements();
+    this.setupEventListeners();
+    this.setupAuth();
+    await this.loadGames();
+  }
+
+  cacheElements() {
+    this.elements = {
+      authLoggedOut: document.getElementById('auth-logged-out'),
+      authLoggedIn: document.getElementById('auth-logged-in'),
+      userAvatar: document.getElementById('user-avatar'),
+      userName: document.getElementById('user-name'),
+      logoutBtn: document.getElementById('logout-btn'),
+      mobileMenuToggle: document.getElementById('mobile-menu-toggle'),
+      mainNav: document.getElementById('main-nav'),
+      gamesGrid: document.getElementById('games-grid'),
+      filterBtns: document.querySelectorAll('.filter-btn')
+    };
+  }
+
+  setupEventListeners() {
+    // Mobile menu
+    this.elements.mobileMenuToggle?.addEventListener('click', () => {
+      const isOpen = this.elements.mainNav.classList.toggle('open');
+      this.elements.mobileMenuToggle.setAttribute('aria-expanded', isOpen);
+    });
+
+    // Close menu on navigation
+    this.elements.mainNav?.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        this.elements.mainNav.classList.remove('open');
+        this.elements.mobileMenuToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // Filter buttons
+    this.elements.filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.currentFilter = btn.dataset.filter;
+        dom.updateFilterButtons(this.elements.filterBtns, this.currentFilter);
+        this.renderGames();
+      });
+    });
+
+    // Logout
+    this.elements.logoutBtn?.addEventListener('click', () => this.handleLogout());
+  }
+
+  setupAuth() {
+    authService.onAuthChange(user => this.updateUserUI(user));
+    this.checkAuth();
+  }
+
+  async checkAuth() {
+    try {
+      const user = await authService.getCurrentUser();
+      this.updateUserUI(user);
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      this.updateUserUI(null);
+    }
+  }
+
+  updateUserUI(user) {
+    if (user) {
+      const userData = authService.formatUserData(user);
+      
+      utils.hide(this.elements.authLoggedOut);
+      utils.show(this.elements.authLoggedIn);
+      
+      this.elements.userName.textContent = userData.name;
+      this.elements.userAvatar.src = userData.avatar;
+      this.elements.userAvatar.alt = `${userData.name}'s avatar`;
+    } else {
+      utils.show(this.elements.authLoggedOut);
+      utils.hide(this.elements.authLoggedIn);
+      
+      this.elements.userAvatar.src = '';
+      this.elements.userName.textContent = '';
+    }
+  }
+
+  async handleLogout() {
+    try {
+      await authService.signOut();
+      this.updateUserUI(null);
+    } catch (error) {
+      console.error('Logout failed:', error);
+      alert('Failed to log out. Please try again.');
+    }
+  }
+
+  async loadGames() {
+    try {
+      dom.showLoading(this.elements.gamesGrid);
+      
+      this.games = await gamesService.fetchGames();
+      
+      setTimeout(() => this.renderGames(), CONFIG.ui.loadingTimeout);
+      
+    } catch (error) {
+      console.error('Failed to load games:', error);
+      dom.showError(this.elements.gamesGrid);
+    }
+  }
+
+  renderGames() {
+    const filtered = gamesService.filterGames(this.games, this.currentFilter);
+
+    if (filtered.length === 0) {
+      dom.showEmpty(this.elements.gamesGrid);
+      return;
+    }
+
+    this.elements.gamesGrid.innerHTML = '';
+
+    const fragment = document.createDocumentFragment();
+
+    filtered.forEach((game, index) => {
+      const card = dom.createGameCard(game, index);
+      fragment.appendChild(card);
+    });
+
+    this.elements.gamesGrid.appendChild(fragment);
+  }
+}
+
+// Initialize app
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => new App());
+} else {
+  new App();
+}
 </script>
 </body>
 </html>
