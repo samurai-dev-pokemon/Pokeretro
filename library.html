@@ -982,17 +982,166 @@ margin-left: auto;
   /* ------------------------ GAMES DATA ---------------------------- */
 
   const games = [
-    { title: "Pokémon Red", type: "official", console: "gb", image: "./images/red.jpeg", url: "./summary/red-summary.html" },
-    { title: "Pokémon Blue", type: "official", console: "gb", image: "./images/blue.jpeg", url: "./summary/blue-summary.html" },
-    { title: "Pokémon Yellow", type: "official", console: "gb", image: "./images/yellow.jpeg", url: "./summary/yellow-summary.html" },
-    { title: "Pokémon Silver", type: "official", console: "gbc", image: "./images/silver.jpg", url: "./summary/silver-summary.html" },
-    { title: "Pokémon Gold", type: "official", console: "gbc", image: "./images/gold.jpeg", url: "./summary/gold-summary.html" },
-    { title: "Pokémon Crystal", type: "official", console: "gbc", image: "./images/crystal.jpeg", url: "./summary/crystal-summary.html" },
-    { title: "Pokémon Fire Red", type: "official", console: "gba", image: "./images/fire.jpg", url: "./summary/fire-summary.html" },
-    { title: "Pokémon Leaf Green", type: "official", console: "gba", image: "./images/leaf.jpeg", url: "./summary/leaf-summary.html" },
-    { title: "Pokémon Ruby", type: "official", console: "gba", image: "./images/ruby.png", url: "./summary/ruby-summary.html" },
-    { title: "Pokémon Sapphire", type: "official", console: "gba", image: "./images/sapphire.jpeg", url: "./summary/sapphire-summary.html" },
-    { title: "Pokémon Emerald", type: "official", console: "gba", image: "./images/emerald.jpeg", url: "./summary/emerald-summary.html" },
+ {
+title: "Pokémon Red",
+type: "official",
+console: "gb",
+image: "./images/red.jpeg",
+url: "./summary/red-summary.html",
+description: "The original Kanto adventure that started it all."
+},
+{
+title: "Pokémon Blue",
+type: "official",
+console: "gb",
+image: "./images/blue.jpeg",
+url: "./summary/blue-summary.html",
+description: "Classic monster-catching gameplay in the original Blue version."
+},
+{
+title: "Pokémon Yellow",
+type: "official",
+console: "gb",
+image: "./images/yellow.jpeg",
+url: "./summary/yellow-summary.html",
+description: "Travel with Pikachu and relive the anime-inspired Kanto journey."
+},
+{
+title: "Pokémon Silver",
+type: "official",
+console: "gbc",
+image: "./images/silver.jpg",
+url: "./summary/silver-summary.html",
+description: "Explore Johto and challenge a whole new generation of Pokémon."
+},
+{
+title: "Pokémon Gold",
+type: "official",
+console: "gbc",
+image: "./images/gold.jpeg",
+url: "./summary/gold-summary.html",
+description: "A beloved Johto classic with time-based gameplay and new legends."
+},
+{
+title: "Pokémon Crystal",
+type: "official",
+console: "gbc",
+image: "./images/crystal.jpeg",
+url: "./summary/crystal-summary.html",
+description: "The enhanced Johto experience with animated sprites and extra story."
+},
+{
+title: "Pokémon Fire Red",
+type: "official",
+console: "gba",
+image: "./images/fire.jpg",
+url: "./summary/fire-summary.html",
+description: "A polished GBA remake of the original Red adventure."
+},
+{
+title: "Pokémon Leaf Green",
+type: "official",
+console: "gba",
+image: "./images/leaf.jpeg",
+url: "./summary/leaf-summary.html",
+description: "Return to Kanto in this enhanced remake of the original Green version."
+},
+{
+title: "Pokémon Ruby",
+type: "official",
+console: "gba",
+image: "./images/ruby.png",
+url: "./summary/ruby-summary.html",
+description: "Hoenn awaits with new Pokémon, secrets, and legendary battles."
+},
+{
+title: "Pokémon Sapphire",
+type: "official",
+console: "gba",
+image: "./images/sapphire.jpeg",
+url: "./summary/sapphire-summary.html",
+description: "Dive into Hoenn and stop Team Aqua in this GBA classic."
+},
+{
+title: "Pokémon Emerald",
+type: "official",
+console: "gba",
+image: "./images/emerald.jpeg",
+url: "./summary/emerald-summary.html",
+description: "The definitive Hoenn adventure with Battle Frontier content."
+},
+{
+title: "Pokémon Diamond",
+type: "official",
+console: "ds",
+image: "./images/diamond.jpg",
+url: "./summary/diamond-summary.html",
+description: "Begin your Sinnoh journey and uncover the mystery of Dialga."
+},
+{
+title: "Pokémon Pearl",
+type: "official",
+console: "ds",
+image: "./images/pearl.jpg",
+url: "./summary/pearl-summary.html",
+description: "Explore the Sinnoh region and face the legendary Palkia."
+},
+{
+title: "Pokémon Platinum",
+type: "official",
+console: "ds",
+image: "./images/platinum.jpg",
+url: "./summary/platinum-summary.html",
+description: "A fan-favorite enhanced Sinnoh experience with the Distortion World."
+},
+{
+title: "Pokémon HeartGold",
+type: "official",
+console: "ds",
+image: "./images/heartgold.jpg",
+url: "./summary/heartgold-summary.html",
+description: "A modernized remake of Gold with DS visuals and extra features."
+},
+{
+title: "Pokémon SoulSilver",
+type: "official",
+console: "ds",
+image: "./images/soulsilver.jpg",
+url: "./summary/soulsilver-summary.html",
+description: "Revisit Johto in one of the most beloved Pokémon remakes ever."
+},
+{
+title: "Pokémon Black",
+type: "official",
+console: "ds",
+image: "./images/black.jpg",
+url: "./summary/black-summary.html",
+description: "Enter Unova and experience a more story-driven Pokémon journey."
+},
+{
+title: "Pokémon White",
+type: "official",
+console: "ds",
+image: "./images/white.jpg",
+url: "./summary/white-summary.html",
+description: "Catch brand-new Pokémon and explore the Unova region."
+},
+{
+title: "Pokémon Black 2",
+type: "official",
+console: "ds",
+image: "./images/black2.jpg",
+url: "./summary/black2-summary.html",
+description: "A rare direct sequel with expanded content and new Unova areas."
+},
+{
+title: "Pokémon White 2",
+type: "official",
+console: "ds",
+image: "./images/white2.jpg",
+url: "./summary/white2-summary.html",
+description: "Continue the Unova story in one of the best DS Pokémon titles."
+},
     { title: "Pokémon Unbound", type: "hack", console: "gba", image: "./images/unbound.jpg", url: "./summary/unbound-summary.html" },
     { title: "Pokémon Emerald Imperium", type: "hack", console: "gba", image: "./images/imparuim.jpeg", url: "./summary/imparuim-summary.html" },
     { title: "Pokémon Radical Red", type: "hack", console: "gba", image: "./images/radical.jpeg", url: "./summary/Radical-red-summary.html" },
