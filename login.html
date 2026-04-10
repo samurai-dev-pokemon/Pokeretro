@@ -219,47 +219,58 @@
         }
 
         .mewtwo-card {
-            background: 
-                radial-gradient(circle at top, rgba(161, 54, 255, 0.3), transparent 70%),
-                linear-gradient(135deg, rgba(26, 11, 46, 0.9), rgba(10, 5, 25, 0.95));
-            border: 2px solid transparent;
-            background-clip: padding-box;
-            border-radius: 32px;
-            padding: 3rem;
-            box-shadow: 
-                0 0 60px rgba(161, 54, 255, 0.4),
-                0 30px 80px rgba(0, 0, 0, 0.8),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative;
             max-width: 500px;
             width: 100%;
             animation: cardFloat 6s ease-in-out infinite, fadeUp 0.8s ease-out;
-            position: relative;
-            overflow: hidden;
+            filter: drop-shadow(0 20px 60px rgba(161, 54, 255, 0.6));
         }
 
-        .mewtwo-card::before {
-            content: '';
+        /* Mewtwo card energy rings */
+        .energy-ring {
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, 
-                var(--psychic-glow), 
-                var(--primary-blue), 
-                var(--psychic-glow));
-            border-radius: 32px;
-            z-index: -1;
-            animation: borderRotate 3s linear infinite;
-            opacity: 0.8;
+            border-radius: 50%;
+            border: 2px solid var(--psychic-glow);
+            opacity: 0;
+            animation: energyPulse 3s infinite ease-out;
         }
 
-        @keyframes borderRotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .energy-ring:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 0s;
+        }
+
+        .energy-ring:nth-child(2) {
+            width: 100%;
+            height: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 1s;
+        }
+
+        .energy-ring:nth-child(3) {
+            width: 100%;
+            height: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 2s;
+        }
+
+        @keyframes energyPulse {
+            0% {
+                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.5);
+            }
         }
 
         @keyframes cardFloat {
@@ -270,14 +281,31 @@
         .art-side img {
             width: 100%;
             max-width: 450px;
-            filter: drop-shadow(0 0 40px var(--psychic-glow)) drop-shadow(0 0 80px rgba(161, 54, 255, 0.4));
+            filter: 
+                drop-shadow(0 0 60px var(--psychic-glow)) 
+                drop-shadow(0 0 100px rgba(161, 54, 255, 0.5))
+                drop-shadow(0 30px 80px rgba(0, 0, 0, 0.8));
             display: block;
             animation: mewtwoFloat 4s ease-in-out infinite;
+            position: relative;
+            z-index: 2;
         }
 
         @keyframes mewtwoFloat {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-15px) scale(1.02); }
+            0%, 100% { 
+                transform: translateY(0) scale(1); 
+                filter: 
+                    drop-shadow(0 0 60px var(--psychic-glow)) 
+                    drop-shadow(0 0 100px rgba(161, 54, 255, 0.5))
+                    drop-shadow(0 30px 80px rgba(0, 0, 0, 0.8));
+            }
+            50% { 
+                transform: translateY(-15px) scale(1.02); 
+                filter: 
+                    drop-shadow(0 0 80px var(--psychic-glow)) 
+                    drop-shadow(0 0 120px rgba(161, 54, 255, 0.7))
+                    drop-shadow(0 40px 100px rgba(0, 0, 0, 0.9));
+            }
         }
 
         .login-card {
@@ -694,6 +722,9 @@
 <div class="login-wrapper">
     <div class="art-side">
         <div class="mewtwo-card">
+            <div class="energy-ring"></div>
+            <div class="energy-ring"></div>
+            <div class="energy-ring"></div>
             <img src="./mewtwo.png" alt="Mewtwo">
         </div>
     </div>
