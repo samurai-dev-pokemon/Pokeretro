@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1413,3 +1414,1137 @@ footer::before {
 </script>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PokéRetro | Play Classic & ROM Hack Games</title>
+<link rel="icon" type="image/x-icon" href="./Master-Ball.ico">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+/* --- RESET & VARIABLES --- */
+:root {
+  --bg-color: #0a0c12;
+  --bg-secondary: #10131b;
+  --card-bg: rgba(28, 30, 38, 0.85);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --primary-red: #ff3b30;
+  --primary-yellow: #ffcc00;
+  --text-main: #ffffff;
+  --text-muted: #a8b0b8;
+  --text-soft: #d6dbe0;
+  --tag-official: #2a82da;
+  --tag-hack: #8e44ad;
+  --tag-gba: #16a085;
+  --tag-gbc: #d35400;
+  --tag-gb: #8bac0f;
+  --tag-ds: #6c5ce7;
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.45);
+  --shadow-red: 0 10px 30px rgba(255, 59, 48, 0.25);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Prevent white flicker during scroll */
+html {
+  background-color: var(--bg-color);
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 59, 48, 0.10), transparent 24%),
+    radial-gradient(circle at 85% 15%, rgba(255, 204, 0, 0.09), transparent 22%),
+    radial-gradient(circle at 50% 80%, rgba(77, 171, 255, 0.08), transparent 30%),
+    linear-gradient(180deg, var(--bg-color) 0%, var(--bg-secondary) 45%, var(--bg-color) 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Background grid overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.35;
+}
+
+/* --- HEADER --- */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 0.95rem 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10, 12, 18, 0.96); /* Opaque fallback helps prevent flicker */
+  backdrop-filter: blur(10px); /* Reduced blur for stability */
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+}
+
+.logo {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1rem;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-shadow: 0 0 14px rgba(255, 59, 48, 0.15);
+}
+
+.logo span {
+  color: var(--primary-red);
+}
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.nav-link {
+  position: relative;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.2s ease;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.35rem;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-red), var(--primary-yellow));
+  transition: width 0.25s ease;
+}
+
+.nav-link:hover,
+.nav-link-active {
+  color: var(--primary-yellow);
+}
+
+.nav-link:hover::after,
+.nav-link-active::after {
+  width: 100%;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.auth-logged-out {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.15rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.btn-pill.primary {
+  background: linear-gradient(135deg, var(--primary-red), #ff6a3d);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  box-shadow: var(--shadow-red);
+}
+
+.btn-pill.ghost {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: var(--text-main);
+}
+
+.btn-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+}
+
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.user-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-yellow);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-info a {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  transition: color 0.2s;
+}
+
+.user-info a:hover,
+.logout-btn:hover {
+  color: var(--primary-yellow);
+}
+
+.user-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-align: left;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text-main);
+  font-size: 1.2rem;
+  cursor: pointer;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+}
+
+/* --- HERO SECTION --- */
+h1, h2 {
+  font-family: 'Press Start 2P', cursive;
+  line-height: 1.4;
+}
+
+.hero {
+  position: relative;
+  text-align: center;
+  padding: 6rem 1rem 3rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(255, 59, 48, 0.20), transparent 70%);
+  filter: blur(20px);
+  z-index: -1;
+}
+
+.hero-badge {
+  display: inline-block;
+  margin-bottom: 1.2rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--primary-yellow);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1.4rem;
+  text-shadow: 0 4px 18px rgba(255, 59, 48, 0.28);
+}
+
+.hero .accent {
+  color: var(--primary-yellow);
+}
+
+.hero p {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  margin: 0 auto 2rem;
+  line-height: 1.8;
+  max-width: 760px;
+}
+
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.hero-btn {
+  padding: 0.95rem 1.4rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: all 0.25s ease;
+  border: 1px solid transparent;
+}
+
+.hero-btn.primary {
+  background: linear-gradient(135deg, var(--primary-red), #ff6a3d);
+  color: white;
+  box-shadow: var(--shadow-red);
+}
+
+.hero-btn.secondary {
+  background: rgba(255,255,255,0.04);
+  color: var(--text-main);
+  border-color: rgba(255,255,255,0.12);
+}
+
+.hero-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* REMOVED STATS CARDS HERE */
+
+/* --- FILTERS --- */
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  padding: 1rem 2rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.filter-btn {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-main);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 0.84rem;
+}
+
+.filter-btn:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 204, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, var(--primary-red), #ff6a3d);
+  box-shadow: var(--shadow-red);
+  border-color: transparent;
+}
+
+/* --- GAMES GRID --- */
+.games-section-title {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 5% 1rem;
+  color: var(--text-soft);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 2rem;
+  padding: 0 5% 5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.game-card {
+  position: relative;
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.2s ease;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.game-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 20%, rgba(255,255,255,0.03) 100%);
+  pointer-events: none;
+}
+
+.game-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(255, 59, 48, 0.35);
+}
+
+.card-image {
+  height: 190px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  overflow: hidden;
+  background: #111;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+  transition: transform 0.5s ease, filter 0.3s ease;
+  z-index: 1;
+}
+
+.game-card:hover .card-image img {
+  transform: scale(1.08);
+  filter: saturate(1.1);
+}
+
+.card-image h3 {
+  font-size: 0.86rem;
+  color: white;
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.9);
+  z-index: 3;
+  padding: 1rem;
+}
+
+.card-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgba(16, 19, 27, 0.95) 0%, rgba(16, 19, 27, 0.3) 45%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.card-content {
+  padding: 1.35rem 1.4rem 1.45rem;
+}
+
+.card-content h4 {
+  font-size: 1.08rem;
+  margin-bottom: 0.7rem;
+  font-weight: 800;
+}
+
+.card-description {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  min-height: 44px;
+}
+
+.tags {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 0.72rem;
+  padding: 0.32rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag.official { background: rgba(42, 130, 218, 0.18); color: #6fc8ff; border: 1px solid rgba(42, 130, 218, 0.35); }
+.tag.hack     { background: rgba(142, 68, 173, 0.18); color: #d89cff; border: 1px solid rgba(142, 68, 173, 0.35); }
+.tag.gba      { background: rgba(22, 160, 133, 0.18); color: #3fe0b8; border: 1px solid rgba(22, 160, 133, 0.35); }
+.tag.gbc      { background: rgba(211, 84, 0, 0.18); color: #ffaf59; border: 1px solid rgba(211, 84, 0, 0.35); }
+.tag.gb       { background: rgba(139, 172, 15, 0.18); color: #b9e03c; border: 1px solid rgba(139, 172, 15, 0.35); }
+.tag.ds       { background: rgba(108, 92, 231, 0.18); color: #a89bff; border: 1px solid rgba(108, 92, 231, 0.35); }
+
+.play-link {
+  text-decoration: none;
+}
+
+.play-btn {
+  width: 100%;
+  padding: 0.9rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.game-card:hover .play-btn {
+  background: var(--primary-yellow);
+  color: #000;
+  border-color: var(--primary-yellow);
+}
+
+/* LOADING / EMPTY */
+.loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem;
+  color: var(--text-muted);
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.9rem;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+}
+
+.empty-state h3 {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: var(--text-main);
+}
+
+/* FULL LIBRARY CTA */
+.more-games-container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0 6rem;
+  position: relative;
+}
+
+.library-btn {
+  position: relative;
+  padding: 1.1rem 3rem;
+  background: linear-gradient(135deg, rgba(28, 30, 38, 0.95), rgba(38, 42, 54, 0.95));
+  color: var(--text-main);
+  text-decoration: none;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.78rem;
+  letter-spacing: 1px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 59, 48, 0.3);
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.library-btn span {
+  position: relative;
+  z-index: 2;
+}
+
+.btn-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: var(--primary-red);
+  box-shadow: 0 0 40px var(--primary-red);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.5s ease, height 0.5s ease;
+  z-index: 1;
+  opacity: 0.35;
+}
+
+.library-btn:hover {
+  transform: scale(1.06) translateY(-4px);
+  border-color: var(--primary-red);
+  box-shadow: 0 15px 30px rgba(255, 59, 48, 0.2);
+  color: white;
+}
+
+.library-btn:hover .btn-glow {
+  width: 260px;
+  height: 260px;
+}
+
+@keyframes pulse-border {
+  0%   { border-color: rgba(255, 59, 48, 0.3); }
+  50%  { border-color: rgba(255, 59, 48, 0.8); }
+  100% { border-color: rgba(255, 59, 48, 0.3); }
+}
+
+.library-btn {
+  animation: pulse-border 2s infinite;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 3rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  background: rgba(255,255,255,0.015);
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .hero h1 { font-size: 2rem; }
+}
+
+@media (max-width: 768px) {
+  header {
+    padding: 0.7rem 4%;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .main-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    background: rgba(10, 12, 18, 0.97);
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    transform: translateY(-12px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s ease;
+  }
+
+  .main-nav.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .hero {
+    padding-top: 4rem;
+  }
+
+  .hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .hero p {
+    font-size: 0.95rem;
+  }
+
+  .games-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .header-actions {
+    margin-left: auto;
+  }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span>Poké</span>Retro
+  </div>
+
+  <button class="mobile-menu-btn" id="mobile-menu-toggle">☰</button>
+
+  <nav class="main-nav" id="main-nav">
+    <a href="index.html" class="nav-link nav-link-active">Home</a>
+    <a href="library.html" class="nav-link">Library</a>
+    <a href="https://forms.gle/7DkJQVvCr8dKMcuy6" class="nav-link">Recommendations</a>
+  </nav>
+
+  <div class="header-actions">
+    <div id="auth-logged-out" class="auth-logged-out">
+      <a href="login.html" class="btn-pill ghost">Log in</a>
+      <a href="signup.html" class="btn-pill primary">Sign up</a>
+    </div>
+
+    <div id="auth-logged-in" class="user-area hidden">
+      <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
+      <div class="user-info">
+        <span id="user-name" class="user-name"></span>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <a href="profile.html">Profile</a>
+          <span style="color: rgba(255,255,255,0.2);">•</span>
+          <button id="logout-btn" class="logout-btn">Log out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-badge">Play classics, hacks, and DS adventures</div>
+  <h1>Gotta Play <span class="accent">'Em All.</span></h1>
+  <p>
+    Relive the golden generations of Pokémon with classic releases, fan-favorite ROM hacks,
+    and Nintendo DS era adventures. Play directly from your browser and discover your next journey.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#games-grid" class="hero-btn primary">Browse Games</a>
+    <a href="library.html" class="hero-btn secondary">Open Full Library</a>
+  </div>
+
+  <!-- REMOVED STATS SECTION HERE -->
+  
+</section>
+
+<section class="filters" id="filter-container">
+  <button class="filter-btn active" data-filter="all">All Games</button>
+  <button class="filter-btn" data-filter="official">Official Releases</button>
+  <button class="filter-btn" data-filter="hack">ROM Hacks</button>
+  <button class="filter-btn" data-filter="gb">Game Boy</button>
+  <button class="filter-btn" data-filter="gbc">Game Boy Color</button>
+  <button class="filter-btn" data-filter="gba">Game Boy Advance</button>
+  <button class="filter-btn" data-filter="ds">Nintendo DS</button>
+</section>
+
+<div class="games-section-title">Featured Library</div>
+<section class="games-grid" id="games-grid"></section>
+
+<section class="more-games-container">
+  <a href="library.html" class="library-btn">
+    <span>Full Library</span>
+    <div class="btn-glow"></div>
+  </a>
+</section>
+
+<footer>
+  <p>Made by Samurai.Dev. This is a fan-made project.</p>
+</footer>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  const SUPABASE_URL = 'https://glppkibaawrquvytvnrg.supabase.co';
+  // Make sure to insert your actual key here
+  const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const authLoggedOut = document.getElementById('auth-logged-out');
+  const authLoggedIn  = document.getElementById('auth-logged-in');
+  const userAvatarEl  = document.getElementById('user-avatar');
+  const userNameEl    = document.getElementById('user-name');
+  const logoutBtn     = document.getElementById('logout-btn');
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const mainNav = document.getElementById('main-nav');
+
+  /* MOBILE MENU */
+  if (mobileMenuToggle) {
+    mobileMenuToggle.addEventListener('click', () => {
+      mainNav.classList.toggle('open');
+    });
+
+    mainNav.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        mainNav.classList.remove('open');
+      });
+    });
+  }
+
+  function setUser(user) {
+    if (user) {
+      authLoggedOut.classList.add('hidden');
+      authLoggedIn.classList.remove('hidden');
+
+      const meta = user.user_metadata || {};
+      const avatarObj = meta.avatar || null;
+
+      const name =
+        meta.trainer_name ||
+        meta.username ||
+        meta.full_name ||
+        'Trainer';
+
+      const avatarUrl =
+        (avatarObj && avatarObj.image) ||
+        meta.avatar_url ||
+        `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${encodeURIComponent(user.id)}`;
+
+      userNameEl.textContent = name;
+      userAvatarEl.src = avatarUrl;
+      userAvatarEl.alt = `${name}'s avatar`;
+    } else {
+      authLoggedOut.classList.remove('hidden');
+      authLoggedIn.classList.add('hidden');
+      userAvatarEl.src = '';
+      userNameEl.textContent = '';
+    }
+  }
+
+  async function refreshUser() {
+    try {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) throw error;
+      setUser(data.user);
+    } catch (error) {
+      console.error('Error fetching user:', error.message);
+      setUser(null);
+    }
+  }
+
+  supabase.auth.onAuthStateChange((_event, session) => {
+    setUser(session?.user ?? null);
+  });
+
+  logoutBtn?.addEventListener('click', async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      setUser(null);
+    } catch (error) {
+      console.error('Error logging out:', error.message);
+      alert('Error logging out. Please try again.');
+    }
+  });
+
+  refreshUser();
+  setTimeout(refreshUser, 500);
+
+  const games = [
+    {
+      title: "Pokémon Red",
+      type: "official",
+      console: "gb",
+      image: "./images/red.jpeg",
+      url: "./summary/red-summary.html",
+      description: "The original Kanto adventure that started it all."
+    },
+    {
+      title: "Pokémon Blue",
+      type: "official",
+      console: "gb",
+      image: "./images/blue.jpeg",
+      url: "./summary/blue-summary.html",
+      description: "Classic monster-catching gameplay in the original Blue version."
+    },
+    {
+      title: "Pokémon Yellow",
+      type: "official",
+      console: "gb",
+      image: "./images/yellow.jpeg",
+      url: "./summary/yellow-summary.html",
+      description: "Travel with Pikachu and relive the anime-inspired Kanto journey."
+    },
+    {
+      title: "Pokémon Silver",
+      type: "official",
+      console: "gbc",
+      image: "./images/silver.jpg",
+      url: "./summary/silver-summary.html",
+      description: "Explore Johto and challenge a whole new generation of Pokémon."
+    },
+    {
+      title: "Pokémon Gold",
+      type: "official",
+      console: "gbc",
+      image: "./images/gold.jpeg",
+      url: "./summary/gold-summary.html",
+      description: "A beloved Johto classic with time-based gameplay and new legends."
+    },
+    {
+      title: "Pokémon Crystal",
+      type: "official",
+      console: "gbc",
+      image: "./images/crystal.jpeg",
+      url: "./summary/crystal-summary.html",
+      description: "The enhanced Johto experience with animated sprites and extra story."
+    },
+    {
+      title: "Pokémon Fire Red",
+      type: "official",
+      console: "gba",
+      image: "./images/fire.jpg",
+      url: "./summary/fire-summary.html",
+      description: "A polished GBA remake of the original Red adventure."
+    },
+    {
+      title: "Pokémon Leaf Green",
+      type: "official",
+      console: "gba",
+      image: "./images/leaf.jpeg",
+      url: "./summary/leaf-summary.html",
+      description: "Return to Kanto in this enhanced remake of the original Green version."
+    },
+    {
+      title: "Pokémon Ruby",
+      type: "official",
+      console: "gba",
+      image: "./images/ruby.png",
+      url: "./summary/ruby-summary.html",
+      description: "Hoenn awaits with new Pokémon, secrets, and legendary battles."
+    },
+    {
+      title: "Pokémon Sapphire",
+      type: "official",
+      console: "gba",
+      image: "./images/sapphire.jpeg",
+      url: "./summary/sapphire-summary.html",
+      description: "Dive into Hoenn and stop Team Aqua in this GBA classic."
+    },
+    {
+      title: "Pokémon Emerald",
+      type: "official",
+      console: "gba",
+      image: "./images/emerald.jpeg",
+      url: "./summary/emerald-summary.html",
+      description: "The definitive Hoenn adventure with Battle Frontier content."
+    },
+    {
+      title: "Pokémon Diamond",
+      type: "official",
+      console: "ds",
+      image: "./images/diamond.jpg",
+      url: "./summary/diamond-summary.html",
+      description: "Begin your Sinnoh journey and uncover the mystery of Dialga."
+    },
+    {
+      title: "Pokémon Pearl",
+      type: "official",
+      console: "ds",
+      image: "./images/pearl.jpg",
+      url: "./summary/pearl-summary.html",
+      description: "Explore the Sinnoh region and face the legendary Palkia."
+    },
+    {
+      title: "Pokémon Platinum",
+      type: "official",
+      console: "ds",
+      image: "./images/platinum.jpg",
+      url: "./summary/platinum-summary.html",
+      description: "A fan-favorite enhanced Sinnoh experience with the Distortion World."
+    },
+    {
+      title: "Pokémon HeartGold",
+      type: "official",
+      console: "ds",
+      image: "./images/heartgold.jpg",
+      url: "./summary/heartgold-summary.html",
+      description: "A modernized remake of Gold with DS visuals and extra features."
+    },
+    {
+      title: "Pokémon SoulSilver",
+      type: "official",
+      console: "ds",
+      image: "./images/soulsilver.jpg",
+      url: "./summary/soulsilver-summary.html",
+      description: "Revisit Johto in one of the most beloved Pokémon remakes ever."
+    },
+    {
+      title: "Pokémon Black",
+      type: "official",
+      console: "ds",
+      image: "./images/black.jpg",
+      url: "./summary/black-summary.html",
+      description: "Enter Unova and experience a more story-driven Pokémon journey."
+    },
+    {
+      title: "Pokémon White",
+      type: "official",
+      console: "ds",
+      image: "./images/white.jpg",
+      url: "./summary/white-summary.html",
+      description: "Catch brand-new Pokémon and explore the Unova region."
+    },
+    {
+      title: "Pokémon Black 2",
+      type: "official",
+      console: "ds",
+      image: "./images/black2.jpg",
+      url: "./summary/black2-summary.html",
+      description: "A rare direct sequel with expanded content and new Unova areas."
+    },
+    {
+      title: "Pokémon White 2",
+      type: "official",
+      console: "ds",
+      image: "./images/white2.jpg",
+      url: "./summary/white2-summary.html",
+      description: "Continue the Unova story in one of the best DS Pokémon titles."
+    },
+    {
+      title: "Pokémon Unbound",
+      type: "hack",
+      console: "gba",
+      image: "./images/unbound.jpg",
+      url: "./summary/unbound-summary.html",
+      description: "A premium ROM hack with a fresh region, story, and deep features."
+    },
+    {
+      title: "Pokémon Emerald Imperium",
+      type: "hack",
+      console: "gba",
+      image: "./images/imparuim.jpeg",
+      url: "./summary/imparuim-summary.html",
+      description: "A difficulty-focused Emerald hack for players wanting a serious challenge."
+    },
+    {
+      title: "Pokémon Radical Red",
+      type: "hack",
+      console: "gba",
+      image: "./images/radical.jpeg",
+      url: "./summary/Radical-red-summary.html",
+      description: "A highly challenging FireRed hack with modern mechanics and huge variety."
+    },
+    {
+      title: "Pokémon Rocket Edition",
+      type: "hack",
+      console: "gba",
+      image: "./images/rocket.jpeg",
+      url: "./summary/rocket-summary.html",
+      description: "Play through Kanto from Team Rocket's perspective in this unique hack."
+    }
+  ];
+
+  const grid = document.getElementById('games-grid');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+
+  // REMOVED: statTotal variable declaration
+
+  function renderGames(filterType = 'all') {
+    grid.innerHTML = '<div class="loading">Loading games...</div>';
+
+    setTimeout(() => {
+      const filtered = filterType === 'all'
+        ? games
+        : games.filter(g => g.type === filterType || g.console === filterType);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <h3>No Games Found</h3>
+            <p>Try selecting a different filter.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = '';
+      filtered.forEach((game, index) => {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        card.style.animationDelay = `${index * 0.04}s`;
+
+        card.innerHTML = `
+          <div class="card-image">
+            <img src="${game.image}" alt="${game.title}" loading="lazy">
+            <h3>${game.title}</h3>
+          </div>
+          <div class="card-content">
+            <h4>${game.title}</h4>
+            <p class="card-description">${game.description || 'A Pokémon adventure awaits.'}</p>
+            <div class="tags">
+              <span class="tag ${game.type}">${game.type}</span>
+              <span class="tag ${game.console}">${game.console.toUpperCase()}</span>
+            </div>
+            <a href="${game.url}" class="play-link">
+              <button class="play-btn">PLAY NOW</button>
+            </a>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }, 150);
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelector('.filter-btn.active')?.classList.remove('active');
+      btn.classList.add('active');
+      renderGames(btn.dataset.filter);
+    });
+  });
+
+  renderGames();
+</script>
+</body>
+</html>
+>>>>>>> c78173efd48ce1efed74fe7f285d7ffbdda8b747
