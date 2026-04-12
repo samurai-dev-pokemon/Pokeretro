@@ -1,10 +1,10 @@
-# Pokeretro 1.0
+# Pokeretro 1.1
 This website was made for fun....
 this website includes basically every single pokemon rom hack and mainline game that I can think of
 Heres its features lol
 
 # Features
-All mainline pokemon games till the gba (nds MAY come soon)<br>
+All mainline pokemon games untill the Nds<br>
 lots of differernt rom hacks (Yess i am accepting reccomendations so I can add your fav game)<br>
 SRM files (save files) can be downloaded <br>
 Uses Emulator JS (the goat)<br>
@@ -13,7 +13,21 @@ No ads and dont plan adding them any time soon<br>
 and MORE!<br>
 
 # Updates
-still on 1.0 LOL<br>
+Added Nds games<br>
+Games include:<br>
+<ul>
+  Pokemon Diamond
+  Pokemon Pearl
+  Pokemon Platinum
+  Pokemon Heartgold
+  Pokemon Soulsilver
+  Pokemon White
+  Pokemon Black
+  Pokemon White 2
+  Pokemon Black 2
+</ul>
+
+
 # Links
 The is the <a href="https://samurai-dev-pokemon.github.io/Pokeretro/index.html">Website</a><br>
 No discord server yet<br>
