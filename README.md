@@ -16,15 +16,15 @@ and MORE!<br>
 Added Nds games<br>
 Games include:<br>
 <ul>
-  Pokemon Diamond
-  Pokemon Pearl
-  Pokemon Platinum
-  Pokemon Heartgold
-  Pokemon Soulsilver
-  Pokemon White
-  Pokemon Black
-  Pokemon White 2
-  Pokemon Black 2
+  Pokemon Diamond<br>
+  Pokemon Pearl<br>
+  Pokemon Platinum<br>
+  Pokemon Heartgold<br>
+  Pokemon Soulsilver<br>
+  Pokemon White<br>
+  Pokemon Black<br>
+  Pokemon White 2<br>
+  Pokemon Black 2<br>
 </ul>
 
 
